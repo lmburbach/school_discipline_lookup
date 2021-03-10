@@ -20,8 +20,49 @@ function myVis(results) {
   // const margin = { top: 20, left: 50, right: 10, bottom: 50 };
 
   // NUMBER LINE PLOT
+  console.log(d_summary);
+  const margin = { top: 20, right: 30, bottom: 20, left: 60 },
+    width = 400 - margin.left - margin.right,
+    height = 80 - margin.top - margin.bottom;
 
+  const pct1_svg = select("#app")
+    .append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", width + margin.top + margin.bottom)
+    .append('g')
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
 
+  pct1_svg.append('text')
+    .attr('class', 'chart-title-small')
+    .text(`Enrollment: ${d_summary[0]['ENROLLMENT']}`);
+
+  const x = scaleLinear().domain([0, 100]).range([0, width])
+  pct1_svg.append('g')
+    .attr("transform", "translate(0," + height + ")")
+    .call(axisBottom(x)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]));
+
+  const y = scaleLinear().domain([0, 10]).range([height, 0])
+
+  pct1_svg
+    .append("g")
+    .selectAll("dot")
+    .data(d_summary)
+    .enter()
+    .append("circle")
+    .attr("cx", x(d_summary[0]['ENROLLMENT_PCT']))
+    .attr("cy", y(5))
+    .attr("r", 5)
+    .attr("fill", "steelBlue");
+
+  pct1_svg
+    .append('text')
+    .attr('class', 'footnote')
+    .attr("transform", `translate(0,${height + 2 * (margin.bottom)})`)
+    .text('Percentile compared to all schools; hover for more details');
 
   // LINE GRAPH
   // MOSTLY WORKS: QUESTIONS: TEXT LABELS NOT APPEARING

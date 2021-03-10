@@ -62,6 +62,22 @@ p {
   font-weight: bold;
 }
 
+.chart-title-small{
+  font-family: 'Lato';
+  font-size: 12pt;
+  line-height: 1.5;
+  color: black;
+  font-weight: bold;
+}
+
+.footnote {
+  font-family: 'Lato';
+  font-size: 8pt;
+  line-height: 1.5;
+  color: darkslategray;
+  font-weight: lighter;
+}
+
 .rect {
   fill:deepskyblue;
 }
