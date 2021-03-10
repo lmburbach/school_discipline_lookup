@@ -1,8 +1,10 @@
 import { csv } from 'd3-fetch';
 import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
+import { zip } from 'd3-array';
 import { axisBottom, axisLeft, axisRight } from 'd3-axis';
-import { line, polygon, stack } from 'd3-shape';
+import { line, polygon, stack, area } from 'd3-shape';
+import { format } from 'd3-format';
 import './main.css';
 
 Promise.all([
@@ -20,9 +22,67 @@ function myVis(results) {
 
   //LINE GRAPH
   const line_svg = select("#app")
+    .append('svg')
+    .attr("width", 600)
+    .attr("height", 150)
+    .append('g')
+
+  const x_array = [2014, 2015, 2016, 2017]
+  const y_array = [d_annual[0]['2014_TOTAL_INC'], d_annual[0]['2015_TOTAL_INC'], d_annual[0]['2016_TOTAL_INC'], d_annual[0]['2017_TOTAL_INC']]
+
+  const data = [{ x: 2014, y: 2166 }, { x: 2015, y: 1871 }, { x: 2016, y: 1660 }, { x: 2017, y: 1309 }]
+  console.log(data)
+
+  const x = scaleLinear().domain([2013.5, 2017.5]).range([0, 600])
+  line_svg.append('g')
+    .call(axisBottom(x)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([2014, 2015, 2016, 2017]))
+    .attr('transform', `translate(0,110)`);
+
+  const y = scaleLinear().domain([1000, 2500]).range([100, 0])
+  // line_svg.append('g')
+  //   .call(axisLeft(y))
+  //   .attr('transform', `translate(50,10)`);
+
+  line_svg.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", 'steelBlue')
+    .attr("stroke-width", 2)
+    .attr("d", line()
+      .x(function (d) { return x(d.x) })
+      .y(function (d) { return y(d.y) }));
+
+  // Add the points
+  line_svg
+    .append("g")
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", function (d) { return x(d.x) })
+    .attr("cy", function (d) { return y(d.y) })
+    .attr("r", 5)
+    .attr("fill", "steelBlue");
+
+  text = line_svg.selectAll("text")
+    .data(data)
+    .enter()
+    .append("text")
+    .text(function (d) { return x(d.y); })
+    .attr('x', function (d) { return x(d.x); })
+    .attr('y', function (d) { return y(d.y); })
+    .attr('dx', 10)
+    .attr('dy', 10);
 
 
-  // // PROPORTION PLOT – WORKS; HOW TO ORGANIZE
+
+
+
+
+  // // PROPORTION PLOT – WORKS; HOW TO ORGANIZE SVGS??
   // const plotHeight = 400;
   // const svg = select("#app")
   //   .append("svg")
