@@ -40,3 +40,38 @@ p {
 .rect {
   fill:deepskyblue;
 }
+
+.first {
+  fill: red;
+  stroke: black;
+}
+
+.second {
+  fill: orange;
+  stroke: black;
+}
+
+.third {
+  fill:yellow;
+  stroke: black;
+}
+
+.fourth {
+  fill: green;
+  stroke: black;
+}
+
+.fifth {
+  fill: blue;
+  stroke: black;
+}
+
+.sixth {
+  fill: indigo;
+  stroke: black;
+}
+
+.seventh {
+  fill: violet;
+  stroke: black;
+}
