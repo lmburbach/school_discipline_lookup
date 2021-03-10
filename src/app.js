@@ -1,7 +1,6 @@
 import { csv } from 'd3-fetch';
 import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { zip } from 'd3-array';
 import { axisBottom, axisLeft, axisRight } from 'd3-axis';
 import { line, polygon, stack, area } from 'd3-shape';
 import { format } from 'd3-format';
@@ -16,70 +15,86 @@ Promise.all([
 
 function myVis(results) {
   const [d_summary, d_annual, d_subgroup] = results;
-  const width = 5000;
-  const height = (36 / 24) * width;
-  const margin = { top: 20, left: 50, right: 10, bottom: 50 };
+  // const width = 5000;
+  // const height = (36 / 24) * width;
+  // const margin = { top: 20, left: 50, right: 10, bottom: 50 };
 
-  //LINE GRAPH
-  const line_svg = select("#app")
-    .append('svg')
-    .attr("width", 600)
-    .attr("height", 150)
-    .append('g')
+  // NUMBER LINE PLOT
 
-  const x_array = [2014, 2015, 2016, 2017]
-  const y_array = [d_annual[0]['2014_TOTAL_INC'], d_annual[0]['2015_TOTAL_INC'], d_annual[0]['2016_TOTAL_INC'], d_annual[0]['2017_TOTAL_INC']]
 
-  const data = [{ x: 2014, y: 2166 }, { x: 2015, y: 1871 }, { x: 2016, y: 1660 }, { x: 2017, y: 1309 }]
-  console.log(data)
 
-  const x = scaleLinear().domain([2013.5, 2017.5]).range([0, 600])
-  line_svg.append('g')
-    .call(axisBottom(x)
-      .ticks()
-      .tickFormat(format('d'))
-      .tickValues([2014, 2015, 2016, 2017]))
-    .attr('transform', `translate(0,110)`);
+  // LINE GRAPH
+  // MOSTLY WORKS: QUESTIONS: TEXT LABELS NOT APPEARING
+  // const margin = { top: 20, right: 30, bottom: 10, left: 60 },
+  //   width = 400 - margin.left - margin.right,
+  //   height = 150 - margin.top - margin.bottom;
 
-  const y = scaleLinear().domain([1000, 2500]).range([100, 0])
+  // const line_svg = select("#app")
+  //   .append('svg')
+  //   .attr("width", width + margin.left + margin.right)
+  //   .attr("height", width + margin.top + margin.bottom)
+  //   .append('g')
+  //   .attr("transform",
+  //     "translate(" + margin.left + "," + margin.top + ")");
+
+  // line_svg.append('text')
+  //   .attr('class', 'chart-title')
+  //   .text('Total Incidents by School Year');
+
+  // const x_array = [2014, 2015, 2016, 2017]
+  // const y_array = [d_annual[0]['2014_TOTAL_INC'], d_annual[0]['2015_TOTAL_INC'], d_annual[0]['2016_TOTAL_INC'], d_annual[0]['2017_TOTAL_INC']]
+
+  // let data = []
+
+  // for (let i = 0; i < x_array.length; i++) {
+  //   let ob = { x: x_array[i], y: y_array[i] }
+  //   data.push(ob)
+  //   console.log(data)
+  // }
+
+  // const x = scaleLinear().domain([2013.5, 2017.5]).range([0, width])
   // line_svg.append('g')
-  //   .call(axisLeft(y))
-  //   .attr('transform', `translate(50,10)`);
+  //   .attr("transform", "translate(0," + height + ")")
+  //   .call(axisBottom(x)
+  //     .ticks()
+  //     .tickFormat(format('d'))
+  //     .tickValues([2014, 2015, 2016, 2017]));
 
-  line_svg.append("path")
-    .datum(data)
-    .attr("fill", "none")
-    .attr("stroke", 'steelBlue')
-    .attr("stroke-width", 2)
-    .attr("d", line()
-      .x(function (d) { return x(d.x) })
-      .y(function (d) { return y(d.y) }));
+  // const y = scaleLinear().domain([1000, 2500]).range([height, 0])
+  // // line_svg.append('g') //keep commented out
+  // //   .call(axisLeft(y)) //keep commented out
+  // //   .attr('transform', `translate(50,10)`); //keep commented out
 
-  // Add the points
-  line_svg
-    .append("g")
-    .selectAll("dot")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", function (d) { return x(d.x) })
-    .attr("cy", function (d) { return y(d.y) })
-    .attr("r", 5)
-    .attr("fill", "steelBlue");
+  // line_svg.append("path")
+  //   .datum(data)
+  //   .attr("fill", "none")
+  //   .attr("stroke", 'steelBlue')
+  //   .attr("stroke-width", 2)
+  //   .attr("d", line()
+  //     .x(function (d) { return x(d.x) })
+  //     .y(function (d) { return y(d.y) }));
 
-  text = line_svg.selectAll("text")
-    .data(data)
-    .enter()
-    .append("text")
-    .text(function (d) { return x(d.y); })
-    .attr('x', function (d) { return x(d.x); })
-    .attr('y', function (d) { return y(d.y); })
-    .attr('dx', 10)
-    .attr('dy', 10);
+  // // Add the points
+  // line_svg
+  //   .append("g")
+  //   .selectAll("dot")
+  //   .data(data)
+  //   .enter()
+  //   .append("circle")
+  //   .attr("cx", function (d) { return x(d.x) })
+  //   .attr("cy", function (d) { return y(d.y) })
+  //   .attr("r", 3)
+  //   .attr("fill", "steelBlue");
 
-
-
-
+  // text = line_svg.selectAll("text")
+  //   .append(g)
+  //   .data(data)
+  //   .enter()
+  //   .append("text")
+  //   .text(function (d) { return x(d.y) })
+  //   // .text('lab')
+  //   .attr('x', function (d) { return x(d.x) + 10 })
+  //   .attr('y', function (d) { return y(d.y) + 10 });
 
 
   // // PROPORTION PLOT – WORKS; HOW TO ORGANIZE SVGS??
