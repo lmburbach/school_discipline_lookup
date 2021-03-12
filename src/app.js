@@ -1,8 +1,8 @@
 import { csv } from 'd3-fetch';
 import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { axisBottom, axisLeft, axisRight } from 'd3-axis';
-import { line, polygon, stack, area } from 'd3-shape';
+import { axisBottom } from 'd3-axis';
+import { line } from 'd3-shape';
 import { format } from 'd3-format';
 import { extent } from 'd3-array';
 import './main.css';
@@ -21,15 +21,10 @@ function myVis(results) {
 
   let show_all = true // update to be if the SYS_SCH != "ALL_SCHOOL_SYSTEMS - ALL_SCHOOLS"
 
-  const filter_title = select('#left-0');
-  filter_title.append('filter-prompt')
-    .attr('class', 'footnote')
-    .text('Select subgroup and school filters to update displayed data.');
-
   const summary_title = select('#left-title');
   summary_title.append('chart-title')
     .attr('class', 'chart-title')
-    .text(`${d_summary[0]['SCHOOL_NAME']} – SY 2017 Discipline Overview`);
+    .text(`${d_summary[0]['SYS_SCH']}`);
 
   // ENROLLMENT PERCENTILE PLOT
   const margin = { top: 20, right: 10, bottom: 20, left: 10 },
@@ -39,14 +34,23 @@ function myVis(results) {
   const x_scale = scaleLinear().domain([0, 100]).range([0, width])
   const y_scale = scaleLinear().domain([0, 10]).range([17, 0])
 
-  const enr = select("#left-3")
+  const enr_container = select("#left-3")
+    .append('div')
+    .attr('class', 'chart-container')
+    .style('position', 'relative');
+
+  const enr = enr_container
     .append('svg')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    .attr('border-color', 'purple')
     .append('g')
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
+
+  enr_container
+    .append('div')
+    .attr('id', 'tooltip')
+    .style('pointer-events', 'none');
 
   enr.append('text')
     .attr('class', 'chart-title-small')
@@ -67,8 +71,18 @@ function myVis(results) {
     .append("circle")
     .attr("cx", x_scale(d_summary[0]['ENROLLMENT_PCT']))
     .attr("cy", y_scale(1))
-    .attr("r", 5)
-    .attr("class", "pct-dot");
+    .attr("r", 6)
+    .attr("class", "pct-dot")
+    .on('mouseenter', function mouseEnter(e) { //not in the right place
+      select(this).attr('fill', 'green');
+      select('#tooltip')
+        .style('top', y_scale(1))
+        .style('left', x_scale(d_summary[0]['ENROLLMENT_PCT']))
+        .text(d_summary[0]['ENROLLMENT_STATEMENT']);
+    }).on('mouseleave', function mouseEnter(d) {
+      select(this).attr('fill', 'steelblue');
+      select('#tooltip').text('');
+    });;
 
   enr
     .append('text')
@@ -146,7 +160,7 @@ function myVis(results) {
   const trends_title = select('#left-title2');
   trends_title.append('chart-title')
     .attr('class', 'chart-title')
-    .text('Yearly Total Incidents since SY 2014');
+    .text('Annual Total Incidents since SY 2014');
 
   const l_height = 125 - margin.top - margin.bottom;
 
@@ -200,7 +214,7 @@ function myVis(results) {
     .attr("r", 3)
     .attr("fill", "steelBlue");
 
-  line_svg.selectAll(".annotation")
+  line_svg.selectAll("annotation")
     .append('g')
     .data(data)
     .enter()
@@ -208,25 +222,23 @@ function myVis(results) {
     .attr('class', 'annotation')
     .text(function (d) { return format(",")(d.y) })
     .attr('x', function (d) { return x(d.x) + 10 })
-    .attr('y', function (d) { return y(d.y) + 2 });
+    .attr('y', function (d) { return y(d.y) });
 
   // PROPORTION PLOT
   const x0 = 60;
   const x1 = 400;
   const scooch = 50;
-  const plotHeight = 525; //Make bigger once flex is moved to bottom
+  const plotHeight = 500;
   const svg = select("#right-top")
     .append("svg")
     .attr("width", 800)
-    .attr("height", 650)
-    .attr("transform",
-      "translate(" + margin.left + ", 0)");
+    .attr("height", 650);
 
   svg.append('text')
     .attr('class', 'chart-title')
     .attr('x', 0)
     .attr('y', 15)
-    .text(`${d_subgroup[0]['SCHOOL_DISTRICT']} - ${d_subgroup[0]['SCHOOL_NAME']} by ${d_subgroup[0]['SUBGROUP_CATEGORY']}`);
+    .text(`${d_subgroup[0]['SYS_SCH']} by ${d_subgroup[0]['SUBGROUP_CATEGORY']}`);
 
   svg.append('text')
     .attr('class', 'legend-title')
