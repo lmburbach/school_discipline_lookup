@@ -29,7 +29,7 @@ function myVis(results) {
   const summary_title = select('#left-title');
   summary_title.append('chart-title')
     .attr('class', 'chart-title')
-    .text(`${d_summary[0]['SCHOOL_NAME']} – Discipline Overview`);
+    .text(`${d_summary[0]['SCHOOL_NAME']} – SY 2017 Discipline Overview`);
 
   // ENROLLMENT PERCENTILE PLOT
   const margin = { top: 20, right: 10, bottom: 20, left: 10 },
@@ -74,7 +74,7 @@ function myVis(results) {
     .append('text')
     .attr('class', 'footnote')
     .attr("transform", `translate(0,${height})`)
-    .text('SY 2017 percentile data is charted above; hover for more details');
+    .text('Percentile ranking is charted above; hover for more details');
 
   // STUDENTS WITH INCIDENTS PERCENTILE PLOT
   const swi = select("#left-4")
@@ -143,7 +143,12 @@ function myVis(results) {
     .attr("class", "pct-dot");
 
   // ANNUAL TRENDS LINE GRAPH
-  const l_height = 150 - margin.top - margin.bottom;
+  const trends_title = select('#left-title2');
+  trends_title.append('chart-title')
+    .attr('class', 'chart-title')
+    .text('Yearly Total Incidents since SY 2014');
+
+  const l_height = 125 - margin.top - margin.bottom;
 
   const line_svg = select("#left-6")
     .append('svg')
@@ -152,11 +157,6 @@ function myVis(results) {
     .append('g')
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
-
-  line_svg.append('text')
-    .attr('class', 'chart-title-small')
-    .text('Total Incidents by School Year')
-    .attr('transform', 'translate (0, -4)');
 
   const x_array = [2014, 2015, 2016, 2017]
   const y_array = [d_annual[0]['2014_TOTAL_INC'], d_annual[0]['2015_TOTAL_INC'], d_annual[0]['2016_TOTAL_INC'], d_annual[0]['2017_TOTAL_INC']]
@@ -178,7 +178,7 @@ function myVis(results) {
       .tickFormat(format('d'))
       .tickValues([2014, 2015, 2016, 2017]));
 
-  const y = scaleLinear().domain([ydim[0] - 100, +ydim[1] + 200]).range([l_height - 10, 0])
+  const y = scaleLinear().domain([ydim[0] - 100, + ydim[1]]).range([l_height, 0])
 
   line_svg.append("path")
     .datum(data)

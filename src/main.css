@@ -1,5 +1,5 @@
 *{
-  border: 2px solid red;
+  border: 1px solid red;
 }
 
 a {
@@ -38,13 +38,13 @@ p {
   color:black;}
 
 #app {  margin-top: 1%;
-  margin-left: 2%;
+  margin-left: 10%;
   margin-right: 2%;
   margin-bottom: 1%;
   height: 100%;
   border-color: blue;
   display:flex;
-justify-content: center;
+justify-content: left;
 }
 
 #left-box {  margin-left: 1%;
@@ -54,7 +54,11 @@ justify-content: center;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* need to fix flex here */
+  /* maybe move border to dropdown selection (move to left?) */
+  border: 2px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
 }
 
 #right-box {  margin-left: 1%;
