@@ -15,11 +15,12 @@ Promise.all([
   .catch(error => { console.log(error) });
 
 function myVis(results) {
-  let show_all = true
+  // const [summary, annual, supgroup] = results;
+  // reset below variables to specifics
   const [d_summary, d_annual, d_subgroup] = results;
 
-  // NUMBER LINE PLOT
-  console.log(d_summary);
+  let show_all = true // update to be if the SYS_SCH != "ALL_SCHOOL_SYSTEMS - ALL_SCHOOLS"
+  // ENROLLMENT PERCENTILE PLOT
   let margin = { top: 20, right: 10, bottom: 20, left: 10 },
     width = 400 - margin.left - margin.right,
     height = 100 - margin.top - margin.bottom;
@@ -38,35 +39,36 @@ function myVis(results) {
     .attr('class', 'chart-title-small')
     .text(`Enrollment: ${format(',')(d_summary[0]['ENROLLMENT'])}`);
 
-  if (show_all) {
-    const x = scaleLinear().domain([0, 100]).range([0, width])
-    pct1_svg.append('g')
-      .attr("transform", "translate(0," + height / 2 + ")")
-      .call(axisBottom(x)
-        .ticks()
-        .tickFormat(format('d'))
-        .tickValues([0, 25, 50, 75, 100]));
+  const x_scale = scaleLinear().domain([0, 100]).range([0, width])
+  pct1_svg.append('g')
+    .attr("transform", "translate(0," + height / 2 + ")")
+    .call(axisBottom(x_scale)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]));
 
-    const y = scaleLinear().domain([0, 10]).range([10, 0])
+  const y_scale = scaleLinear().domain([0, 10]).range([10, 0])
 
-    pct1_svg
-      .append("g")
-      .selectAll("dot")
-      .data(d_summary)
-      .enter()
-      .append("circle")
-      .attr("cx", x(d_summary[0]['ENROLLMENT_PCT']))
-      .attr("cy", y(1))
-      .attr("r", 5)
-      .attr("class", "pct-dot");
+  pct1_svg
+    .append("g")
+    .selectAll("dot")
+    .data(d_summary)
+    .enter()
+    .append("circle")
+    .attr("cx", x_scale(d_summary[0]['ENROLLMENT_PCT']))
+    .attr("cy", y_scale(1))
+    .attr("r", 5)
+    .attr("class", "pct-dot");
 
-    pct1_svg
-      .append('text')
-      .attr('class', 'footnote')
-      .attr("transform", `translate(0,${height})`)
-      .text('Percentile compared to all schools; hover for more details');
-  }
-  // LINE GRAPH
+  pct1_svg
+    .append('text')
+    .attr('class', 'footnote')
+    .attr("transform", `translate(0,${height})`)
+    .text('Percentile compared to all schools; hover for more details');
+
+
+
+  // ANNUAL TRENDS LINE GRAPH
   let l_height = 150 - margin.top - margin.bottom;
 
   const line_svg = select("#left-7")
@@ -113,7 +115,6 @@ function myVis(results) {
       .x(function (d) { return x(d.x) })
       .y(function (d) { return y(d.y) }));
 
-  // Add the points
   line_svg
     .append("g")
     .selectAll("dot")
