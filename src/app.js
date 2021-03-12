@@ -20,36 +20,46 @@ function myVis(results) {
   const [d_summary, d_annual, d_subgroup] = results;
 
   let show_all = true // update to be if the SYS_SCH != "ALL_SCHOOL_SYSTEMS - ALL_SCHOOLS"
+
+  const filter_title = select('#left-0');
+  filter_title.append('filter-prompt')
+    .attr('class', 'footnote')
+    .text('Select subgroup and school filters to update displayed data.');
+
+  const summary_title = select('#left-title');
+  summary_title.append('chart-title')
+    .attr('class', 'chart-title')
+    .text(`${d_summary[0]['SCHOOL_NAME']} – Discipline Overview`);
+
   // ENROLLMENT PERCENTILE PLOT
-  let margin = { top: 20, right: 10, bottom: 20, left: 10 },
+  const margin = { top: 20, right: 10, bottom: 20, left: 10 },
     width = 400 - margin.left - margin.right,
     height = 100 - margin.top - margin.bottom;
 
-  const pct1_svg = select("#left-3")
+  const x_scale = scaleLinear().domain([0, 100]).range([0, width])
+  const y_scale = scaleLinear().domain([0, 10]).range([17, 0])
+
+  const enr = select("#left-3")
     .append('svg')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr('border-color', 'purple')
     .append('g')
     .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")")
-    ;
+      "translate(" + margin.left + "," + margin.top + ")");
 
-  pct1_svg.append('text')
+  enr.append('text')
     .attr('class', 'chart-title-small')
     .text(`Enrollment: ${format(',')(d_summary[0]['ENROLLMENT'])}`);
 
-  const x_scale = scaleLinear().domain([0, 100]).range([0, width])
-  pct1_svg.append('g')
+  enr.append('g')
     .attr("transform", "translate(0," + height / 2 + ")")
     .call(axisBottom(x_scale)
       .ticks()
       .tickFormat(format('d'))
       .tickValues([0, 25, 50, 75, 100]));
 
-  const y_scale = scaleLinear().domain([0, 10]).range([10, 0])
-
-  pct1_svg
+  enr
     .append("g")
     .selectAll("dot")
     .data(d_summary)
@@ -60,18 +70,82 @@ function myVis(results) {
     .attr("r", 5)
     .attr("class", "pct-dot");
 
-  pct1_svg
+  enr
     .append('text')
     .attr('class', 'footnote')
     .attr("transform", `translate(0,${height})`)
-    .text('Percentile compared to all schools; hover for more details');
+    .text('SY 2017 percentile data is charted above; hover for more details');
 
+  // STUDENTS WITH INCIDENTS PERCENTILE PLOT
+  const swi = select("#left-4")
+    .append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top)
+    .attr('border-color', 'purple')
+    .append('g')
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")")
+    ;
 
+  swi.append('text')
+    .attr('class', 'chart-title-small')
+    .text(`Students with Incidents: ${format(',')(d_summary[0]['STUDENTS_WITH_INCIDENTS'])} (${format(',')(d_summary[0]['%_SWI'])}% of students)`);
+
+  swi.append('g')
+    .attr("transform", "translate(0," + height / 2 + ")")
+    .call(axisBottom(x_scale)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]));
+
+  swi
+    .append("g")
+    .selectAll("dot")
+    .data(d_summary)
+    .enter()
+    .append("circle")
+    .attr("cx", x_scale(d_summary[0]['%_SWI_PCT']))
+    .attr("cy", y_scale(1))
+    .attr("r", 5)
+    .attr("class", "pct-dot");
+
+  // TOTAL INCIDENTS
+  const ips = select("#left-5")
+    .append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top)
+    .attr('border-color', 'purple')
+    .append('g')
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")")
+    ;
+
+  ips.append('text')
+    .attr('class', 'chart-title-small')
+    .text(`Total Incidents: ${format(',')(d_summary[0]['TOTAL_INCIDENTS'])} (${format(',')(d_summary[0]['INCIDENTS_PER_STUDENT'])} incidents per student)`);
+
+  ips.append('g')
+    .attr("transform", "translate(0," + height / 2 + ")")
+    .call(axisBottom(x_scale)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]));
+
+  ips
+    .append("g")
+    .selectAll("dot")
+    .data(d_summary)
+    .enter()
+    .append("circle")
+    .attr("cx", x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']))
+    .attr("cy", y_scale(1))
+    .attr("r", 5)
+    .attr("class", "pct-dot");
 
   // ANNUAL TRENDS LINE GRAPH
-  let l_height = 150 - margin.top - margin.bottom;
+  const l_height = 150 - margin.top - margin.bottom;
 
-  const line_svg = select("#left-7")
+  const line_svg = select("#left-6")
     .append('svg')
     .attr("width", width + margin.left + margin.right)
     .attr("height", l_height + margin.top + margin.bottom)
@@ -136,10 +210,12 @@ function myVis(results) {
     .attr('x', function (d) { return x(d.x) + 10 })
     .attr('y', function (d) { return y(d.y) + 2 });
 
-
   // PROPORTION PLOT
-  const plotHeight = 500;
-  const svg = select("#right-box")
+  const x0 = 60;
+  const x1 = 400;
+  const scooch = 50;
+  const plotHeight = 525; //Make bigger once flex is moved to bottom
+  const svg = select("#right-top")
     .append("svg")
     .attr("width", 800)
     .attr("height", 650)
@@ -151,10 +227,6 @@ function myVis(results) {
     .attr('x', 0)
     .attr('y', 15)
     .text(`${d_subgroup[0]['SCHOOL_DISTRICT']} - ${d_subgroup[0]['SCHOOL_NAME']} by ${d_subgroup[0]['SUBGROUP_CATEGORY']}`);
-
-  const x0 = 60;
-  const x1 = 400;
-  const scooch = 50;
 
   svg.append('text')
     .attr('class', 'legend-title')
@@ -243,4 +315,13 @@ function myVis(results) {
         .text(`${(d_subgroup[i + 1]['%_DISC_POP'])}%`);
     }
   }
+
+  const overunder = select('#right-bottom')
+
+  const PPTS = d_subgroup.map(a => a['PPTS']);
+  // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
+  const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+
+  overunder.append('text')
+    .text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
 }
