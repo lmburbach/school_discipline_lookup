@@ -95,7 +95,6 @@ function myVis(results) {
     .append('svg')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top)
-    .attr('border-color', 'purple')
     .append('g')
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")")
@@ -128,7 +127,6 @@ function myVis(results) {
     .append('svg')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top)
-    .attr('border-color', 'purple')
     .append('g')
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")")
@@ -329,6 +327,7 @@ function myVis(results) {
   }
 
   const overunder = select('#right-bottom')
+  console.log(overunder)
 
   const PPTS = d_subgroup.map(a => a['PPTS']);
   // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
