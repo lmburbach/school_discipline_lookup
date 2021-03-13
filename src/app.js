@@ -4,20 +4,44 @@ import { scaleLinear } from 'd3-scale';
 import { axisBottom } from 'd3-axis';
 import { line } from 'd3-shape';
 import { format } from 'd3-format';
-import { extent } from 'd3-array';
+import { min, max } from 'd3-array';
 import './main.css';
 
 Promise.all([
-  csv('./data/tiny_summary.csv'),
-  csv('./data/tiny_annual_incidents.csv'),
-  csv('./data/tiny_discipline_by_subgroup.csv')
+  csv('./data/summary.csv'),
+  csv('./data/annual_incidents.csv'),
+  csv('./data/discipline_by_subgroup.csv')
 ]).then(myVis)
   .catch(error => { console.log(error) });
 
 function myVis(results) {
-  // const [summary, annual, supgroup] = results;
-  // reset below variables to specifics
-  const [d_summary, d_annual, d_subgroup] = results;
+  const [summary, annual, subgroup] = results;
+
+  const subgroup_selection = 'Race/Ethnicity';
+  const sys_sch_selection = 'Meriwether County – Greenville Middle School';
+
+  // https://www.javascripttutorial.net/javascript-array-filter/
+  let d_summary = [];
+  for (let i = 0; i < summary.length; i++) {
+    if (summary[i]['SYS_SCH'] === sys_sch_selection) {
+      d_summary.push(summary[i]);
+    }
+  }
+
+
+  let d_annual = [];
+  for (let i = 0; i < annual.length; i++) {
+    if (annual[i]['SYS_SCH'] === sys_sch_selection) {
+      d_annual.push(annual[i]);
+    }
+  }
+
+  let d_subgroup = [];
+  for (let i = 0; i < subgroup.length; i++) {
+    if ((subgroup[i]['SYS_SCH'] === sys_sch_selection) && (subgroup[i]['SUBGROUP_CATEGORY'] === subgroup_selection)) { //ADD AND CONDITION
+      d_subgroup.push(subgroup[i]);
+    }
+  }
 
   let show_all = true // update to be if the SYS_SCH != "ALL_SCHOOL_SYSTEMS - ALL_SCHOOLS"
 
@@ -73,7 +97,7 @@ function myVis(results) {
     .attr("cy", y_scale(1))
     .attr("r", 6)
     .attr("class", "pct-dot")
-    .on('mouseenter', function mouseEnter(e) { //not in the right place
+    .on('mouseenter', function mouseEnter(e) { //not in the right position
       select(this).attr('fill', 'green');
       select('#tooltip')
         .style('top', y_scale(1))
@@ -158,7 +182,7 @@ function myVis(results) {
   const trends_title = select('#left-title2');
   trends_title.append('chart-title')
     .attr('class', 'chart-title')
-    .text('Annual Total Incidents since SY 2014');
+    .text('Annual Trends in Total Incidents since SY 2014');
 
   const l_height = 125 - margin.top - margin.bottom;
 
@@ -171,12 +195,12 @@ function myVis(results) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   const x_array = [2014, 2015, 2016, 2017]
-  const y_array = [d_annual[0]['2014_TOTAL_INC'], d_annual[0]['2015_TOTAL_INC'], d_annual[0]['2016_TOTAL_INC'], d_annual[0]['2017_TOTAL_INC']]
+  const y_arr = [d_annual[0]['2014'], d_annual[0]['2015'], d_annual[0]['2016'], d_annual[0]['2017']]
+  const y_array = y_arr.map((i) => Number(i));
 
-  const ydim = extent(y_array);
+  const ydim = [min(y_array), max(y_array)];
 
   let data = []
-
   for (let i = 0; i < x_array.length; i++) {
     let ob = { x: x_array[i], y: y_array[i] }
     data.push(ob)
@@ -220,13 +244,13 @@ function myVis(results) {
     .attr('class', 'annotation')
     .text(function (d) { return format(",")(d.y) })
     .attr('x', function (d) { return x(d.x) + 10 })
-    .attr('y', function (d) { return y(d.y) });
+    .attr('y', function (d) { return y(d.y) + 5 });
 
   // PROPORTION PLOT
   const x0 = 60;
   const x1 = 400;
   const scooch = 50;
-  const plotHeight = 500;
+  const plotHeight = 475;
   const svg = select("#right-top")
     .append("svg")
     .attr("width", 800)
@@ -290,7 +314,7 @@ function myVis(results) {
 
   const ordinalClasses = ['second', 'third', 'fourth', 'fifth', 'sixth', 'seventh']
 
-  for (let i = 0; i < ordinalClasses.length; i++) {
+  for (let i = 0; i < (d_subgroup.length - 1); i++) {
     svg.append('polygon')
       .attr('points', `${x0},${scooch + (d_subgroup[i]['CUM_%_OVERALL'] / 100) * plotHeight}
             ${x1}, ${scooch + (d_subgroup[i]['CUM_%_DISC'] / 100) * plotHeight}
@@ -317,7 +341,9 @@ function myVis(results) {
         .attr('x', x0 - 50)
         .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / 200) * plotHeight}`)
         .text(`${(d_subgroup[i + 1]['%_OVERALL_POP'])}%`);
+    }
 
+    if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
       svg.append('text')
         .attr('class', 'prop-label')
         .attr('x', 405)
@@ -327,12 +353,28 @@ function myVis(results) {
   }
 
   const overunder = select('#right-bottom')
-  console.log(overunder)
-
-  const PPTS = d_subgroup.map(a => a['PPTS']);
-  // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
-  const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-
-  overunder.append('text')
-    .text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
+  if (d_subgroup[0]['SUBGROUP_CATEGORY'] === 'Race/Ethnicity') {
+    const PPTS = d_subgroup.map(a => a['PPTS']);
+    // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
+    const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+    overunder.append('text')
+      .text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`);
+    const footnote = select('#right-bottom2')
+      .attr('class', 'footnote')
+      .text("Calculation & Display Notes: The Governor's Office of Student Achievement discipline data includes the following Race/Ethnicity groups: American Indian or Alaskan Native, Asian, Black, Hispanic, Native Hawaiian or Other Pacific Islander, Two or More races, and White. Race/ethnicity groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population");
+  }
+  else {
+    const ou = d_subgroup.map(a => a['OVER/UNDER']);
+    const idx = ou.findIndex(x => x === 'overrepresented');
+    const footnote = select('#right-bottom2')
+      .attr('class', 'footnote')
+      .text("Calculation & Display Notes: Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population");
+    if (d_subgroup[idx]['SUBGROUP_CATEGORY'] === 'Disability Status') {
+      overunder.append('text')
+        .text(`${d_subgroup[idx]['SUBGROUP']} are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
+    }
+    else {
+      overunder.append('text').text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
+    }
+  }
 }
