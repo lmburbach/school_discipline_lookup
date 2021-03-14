@@ -86,19 +86,18 @@ justify-content: left;
   /* need to fix flex here */}
 
 #right-bottom {
-  margin-top: 1%;
-  margin-left: 1%;
+  margin-top: 2%;
+  margin-left: 5%;
+  margin-right: 5%;
   font-size: 14pt;
-  margin-right: 1%;
-  width: 700px;
+  width: 600px;
   border-color:yellow;
   text-align: center;
-  display: flex;
-  align-self: center;
+
 }
 
 #right-bottom2 {
-  margin-top: .5%;
+  margin-top: 1%;
   margin-left: 1%;
   font-size: 8pt;
   margin-right: 1%;
@@ -216,4 +215,15 @@ padding-right: 5pt;
 .seventh {
   fill: violet;
   stroke: black;
+}
+/* //try */
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
 }

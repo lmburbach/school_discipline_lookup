@@ -1,5 +1,5 @@
 import { csv } from 'd3-fetch';
-import { select } from 'd3-selection';
+import { select, transition } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { axisBottom } from 'd3-axis';
 import { line } from 'd3-shape';
@@ -17,8 +17,8 @@ Promise.all([
 function myVis(results) {
   const [summary, annual, subgroup] = results;
 
-  const subgroup_selection = 'Race/Ethnicity';
-  const sys_sch_selection = 'Meriwether County – Greenville Middle School';
+  const subgroup_selection = 'English Learners';
+  const sys_sch_selection = 'Atlanta Public Schools – All Schools';
 
   // https://www.javascripttutorial.net/javascript-array-filter/
   let d_summary = [];
@@ -63,6 +63,11 @@ function myVis(results) {
     .attr('class', 'chart-container')
     .style('position', 'relative');
 
+  // var enr_container = select("#left-3").append("div")
+  //   .attr("class", "tooltip")
+  //   // .style("opacity", 0)
+  //   .style('position', 'relative');
+
   const enr = enr_container
     .append('svg')
     .attr("width", width + margin.left + margin.right)
@@ -97,8 +102,8 @@ function myVis(results) {
     .attr("cy", y_scale(1))
     .attr("r", 6)
     .attr("class", "pct-dot")
-    .on('mouseenter', function mouseEnter(e) { //not in the right position
-      select(this).attr('fill', 'green');
+    .on('mouseenter', function mouseEnter(e,) { //not in the right position
+      select(this).attr('fill', 'green')
       select('#tooltip')
         .style('top', y_scale(1))
         .style('left', x_scale(d_summary[0]['ENROLLMENT_PCT']))
@@ -106,7 +111,7 @@ function myVis(results) {
     }).on('mouseleave', function mouseEnter(d) {
       select(this).attr('fill', 'steelblue');
       select('#tooltip').text('');
-    });;
+    });
 
   enr
     .append('text')
@@ -254,7 +259,10 @@ function myVis(results) {
   const svg = select("#right-top")
     .append("svg")
     .attr("width", 800)
-    .attr("height", 650);
+    .attr("height", 600);
+
+  const overall_max = d_subgroup[(d_subgroup.length - 1)]['CUM_%_OVERALL']
+  const disc_max = d_subgroup[(d_subgroup.length - 1)]['CUM_%_DISC']
 
   svg.append('text')
     .attr('class', 'chart-title')
@@ -283,20 +291,20 @@ function myVis(results) {
   svg.append('polygon')
     .attr('points', `${x0},${scooch}
           ${x1},${scooch}
-          ${x1},${scooch + ((d_subgroup[0]['%_DISC_POP'] / 100) * plotHeight)}
-          ${x0},${scooch + (d_subgroup[0]['%_OVERALL_POP'] / 100) * plotHeight}`)
+          ${x1},${scooch + ((d_subgroup[0]['%_DISC_POP'] / disc_max) * plotHeight)}
+          ${x0},${scooch + (d_subgroup[0]['%_OVERALL_POP'] / overall_max) * plotHeight}`)
     .attr('class', 'first');
 
   svg.append('text')
     .attr('class', 'prop-label')
     .attr('x', x0 - 50)
-    .attr('y', `${scooch + (d_subgroup[0]['CUM_%_OVERALL'] / 100) * plotHeight / 2}`)
+    .attr('y', `${scooch + (d_subgroup[0]['CUM_%_OVERALL'] / overall_max) * plotHeight / 2}`)
     .text(`${(d_subgroup[0]['%_OVERALL_POP'])}%`);
 
   svg.append('text')
     .attr('class', 'prop-label')
     .attr('x', 405)
-    .attr('y', `${scooch + (d_subgroup[0]['CUM_%_DISC'] / 100) * plotHeight / 2}`)
+    .attr('y', `${scooch + (d_subgroup[0]['CUM_%_DISC'] / disc_max) * plotHeight / 2}`)
     .text(`${(d_subgroup[0]['%_DISC_POP'])}%`);
 
   svg.append('rect')
@@ -316,10 +324,10 @@ function myVis(results) {
 
   for (let i = 0; i < (d_subgroup.length - 1); i++) {
     svg.append('polygon')
-      .attr('points', `${x0},${scooch + (d_subgroup[i]['CUM_%_OVERALL'] / 100) * plotHeight}
-            ${x1}, ${scooch + (d_subgroup[i]['CUM_%_DISC'] / 100) * plotHeight}
-            ${x1}, ${scooch + (d_subgroup[i + 1]['CUM_%_DISC'] / 100) * plotHeight}
-            ${x0}, ${scooch + (d_subgroup[i + 1]['CUM_%_OVERALL'] / 100) * plotHeight}`)
+      .attr('points', `${x0},${scooch + (d_subgroup[i]['CUM_%_OVERALL'] / overall_max) * plotHeight}
+            ${x1}, ${scooch + (d_subgroup[i]['CUM_%_DISC'] / disc_max) * plotHeight}
+            ${x1}, ${scooch + (d_subgroup[i + 1]['CUM_%_DISC'] / disc_max) * plotHeight}
+            ${x0}, ${scooch + (d_subgroup[i + 1]['CUM_%_OVERALL'] / overall_max) * plotHeight}`)
       .attr('class', ordinalClasses[i]);
 
     svg.append('rect')
@@ -352,23 +360,23 @@ function myVis(results) {
     }
   }
 
-  const overunder = select('#right-bottom')
+  const overunder = select('#right-bottom');
   if (d_subgroup[0]['SUBGROUP_CATEGORY'] === 'Race/Ethnicity') {
     const PPTS = d_subgroup.map(a => a['PPTS']);
     // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
     const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
     overunder.append('text')
       .text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`);
-    const footnote = select('#right-bottom2')
+    select('#right-bottom2')
       .attr('class', 'footnote')
-      .text("Calculation & Display Notes: The Governor's Office of Student Achievement discipline data includes the following Race/Ethnicity groups: American Indian or Alaskan Native, Asian, Black, Hispanic, Native Hawaiian or Other Pacific Islander, Two or More races, and White. Race/ethnicity groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population");
+      .text("Notes: The Governor's Office of Student Achievement discipline data includes the following Race/Ethnicity groups: American Indian or Alaskan Native, Asian, Black, Hispanic, Native Hawaiian or Other Pacific Islander, Two or More races, and White. Race/ethnicity groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population.");
   }
   else {
     const ou = d_subgroup.map(a => a['OVER/UNDER']);
     const idx = ou.findIndex(x => x === 'overrepresented');
-    const footnote = select('#right-bottom2')
+    select('#right-bottom2')
       .attr('class', 'footnote')
-      .text("Calculation & Display Notes: Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population");
+      .text("Notes: Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population.");
     if (d_subgroup[idx]['SUBGROUP_CATEGORY'] === 'Disability Status') {
       overunder.append('text')
         .text(`${d_subgroup[idx]['SUBGROUP']} are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
