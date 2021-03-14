@@ -17,9 +17,29 @@ Promise.all([
 function myVis(results) {
   const [summary, annual, subgroup] = results;
 
-  const subgroup_selection = 'English Learners';
-  const sys_sch_selection = 'Atlanta Public Schools – All Schools';
+  // Set dropdown features
+  const subgroups = [...new Set(subgroup.map(item => item['SUBGROUP_CATEGORY']))];
+  const schools = [...new Set(subgroup.map(item => item['SYS_SCH']))];
 
+  let subgroup_selection = 'Race/Ethnicity';
+  let sys_sch_selection = 'Appling County – All Schools';
+
+  const dropdowns = select('#left-1')
+    .append('div')
+    .selectAll('.drop-down')
+    .data([subgroups])
+    .join('div');
+
+  dropdowns.append('div').text(['Select Subgroup Category']);
+  // Correctly populates, but does not sure how to extract the value
+  dropdowns.append('select')
+    .selectAll('options')
+    .data(subgroups.map(subgroup => ({ subgroup })))
+    .join('option')
+    .text(d => d.subgroup)
+
+
+  // Filter data based on user selection
   // https://www.javascripttutorial.net/javascript-array-filter/
   let d_summary = [];
   for (let i = 0; i < summary.length; i++) {
@@ -62,11 +82,6 @@ function myVis(results) {
     .append('div')
     .attr('class', 'chart-container')
     .style('position', 'relative');
-
-  // var enr_container = select("#left-3").append("div")
-  //   .attr("class", "tooltip")
-  //   // .style("opacity", 0)
-  //   .style('position', 'relative');
 
   const enr = enr_container
     .append('svg')
