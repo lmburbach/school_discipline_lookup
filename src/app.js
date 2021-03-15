@@ -409,7 +409,7 @@ function myVis(results) {
       svg.append('text')
         .attr('class', 'prop-label')
         .attr('x', x0 - 50)
-        .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / 200) * plotHeight}`)
+        .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
         .text(`${(d_subgroup[i + 1]['%_OVERALL_POP'])}%`);
     }
 
@@ -417,7 +417,7 @@ function myVis(results) {
       svg.append('text')
         .attr('class', 'prop-label')
         .attr('x', 405)
-        .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / 200) * plotHeight}`)
+        .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
         .text(`${(d_subgroup[i + 1]['%_DISC_POP'])}%`);
     }
   }
