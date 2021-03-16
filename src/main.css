@@ -1,5 +1,4 @@
 *{
-  /* border: 1px solid red; */
   font-family: sans-serif;
 }
 
@@ -11,7 +10,6 @@ html,
 body {
   background: white;
   font-family: 'Lato', sans-serif;
-  /* height: 100%; */
   margin: 0;
   padding: 0;
   width: 100%;
@@ -61,6 +59,13 @@ justify-content: space-around;
   padding-bottom: 10px;
 }
 
+#left-3{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
 #filters { border:1px solid black;
   margin-left: -10px;
   padding-left: 10px;
@@ -73,6 +78,10 @@ justify-content: space-around;
 
 #left-1, #left-2 {
   margin-top: 5pt;
+}
+
+#left-3, #left-4, #left-5 {
+  position: relative;
 }
 
 #right-box {  margin-left: 1%;
@@ -154,6 +163,7 @@ width: 100%;
   border-color:white;
   padding-top: 2pt;
   margin-top: 2pt;
+  text-align: center;
 }
 
 .legend-title{
@@ -175,6 +185,7 @@ width: 100%;
 }
 
 .chart-title-small{
+  padding-top: 2px;
   font-family: 'Lato';
   font-size: 12pt;
   line-height: 1.5;
@@ -194,7 +205,7 @@ width: 100%;
 }
 
 .SWD, .MALE, .NHPI{
-  fill: orange;
+  fill: #D17A22;
   stroke: black;
 }
 
@@ -225,11 +236,15 @@ width: 100%;
 
 .tooltip {
   position: absolute;
-  text-align: center;
-  padding: 2px;
+  text-align: left;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
   font: 12px sans-serif;
-  background: lightsteelblue;
-  border: 0px;
-  border-radius: 8px;
+  background: #d4d4d4;
+  border-radius: 5px;
   pointer-events: none;
+  max-width: 250px;
+  min-width: 100px;
 }
