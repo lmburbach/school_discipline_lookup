@@ -92,31 +92,46 @@ function myVis(results) {
   const enr_footnote = enr.append('text');
 
   // Students with Incidents
-
-  const swi = select("#left-4")
+  const swi_container = select("#left-4")
+    .append('div')
+    .attr('class', 'chart-container')
+    .style('position', 'relative');
+  const swi_title = swi_container.append('g')
+  const swi = swi_container
     .append('svg')
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top)
+    .attr("height", height + margin.top + margin.bottom)
     .append('g')
     .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")")
-    ;
+      "translate(" + margin.left + "," + margin.top + ")");
+  const swi_scale = swi
+    .append('g')
+    .attr("transform", "translate(0," + height / 2 + ")");  // UPTICK
+  const swi_circles = swi.append('g');
 
-  // Incidents per student
-  const ips = select("#left-5")
+  // Incidents per Student
+  const ips_container = select("#left-5")
+    .append('div')
+    .attr('class', 'chart-container')
+    .style('position', 'relative');
+  const ips_title = ips_container.append('g')
+  const ips = ips_container
     .append('svg')
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top)
+    .attr("height", height + margin.top + margin.bottom)
     .append('g')
     .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")")
-    ;
+      "translate(" + margin.left + "," + margin.top + ")");
+  const ips_scale = ips
+    .append('g')
+    .attr("transform", "translate(0," + height / 2 + ")");  // UPTICK
+  const ips_circles = ips.append('g');
 
-  // State for Annual Trends Plot
+  // Annual Trends
   const trends_title = select('#left-title2');
   trends_title.append('chart-title')
     .attr('class', 'chart-title')
-    .text('Annual Discipline Incidents by School Year');
+    .text('Total Discipline Incidents per Year');
 
   const l_height = 125 - margin.top - margin.bottom;
 
@@ -192,23 +207,30 @@ function myVis(results) {
       .attr('class', 'chart-title-small')
       .text(d => `Enrollment: ${format(',')(d['ENROLLMENT'])} students`);
 
+    // Students with Incidents
+    swi_title.selectAll('swi_text')
+      .data(d_summary)
+      .join('swi_text')
+      .attr('class', 'chart-title-small')
+      .text(d => `
+        Students with Incidents: ${format(',')(d['STUDENTS_WITH_INCIDENTS'])} students
+         (${format(',')(d['%_SWI'])}% of students)`);
 
-    //   //STUDENTS WITH INCIDENTS PERCENTILE PLOT (update tool tips, title parsing based on resolution to enrollment)
-    //   swi.append('text')
-    //     .attr('class', 'chart-title-small')
-    //     .text(`
-    //     Students with Incidents: ${format(',')(d_summary[0]['STUDENTS_WITH_INCIDENTS'])}
-    //      (${format(',')(d_summary[0]['%_SWI'])}% of students)`);
-
-    //   // TOTAL INCIDENTS PERCENTILE PLOT
-    //   ips.append('text')
-    //     .attr('class', 'chart-title-small')
-    //     .text(`Total Incidents: ${format(',')(d_summary[0]['TOTAL_INCIDENTS'])} (${format(',')(d_summary[0]['INCIDENTS_PER_STUDENT'])} incidents per student)`);
+    // Incidents per Student
+    ips_title.selectAll('ips_text')
+      .data(d_summary)
+      .join('ips_text')
+      .attr('class', 'chart-title-small')
+      .text(d => `
+        Total Incidents: ${format(',')(d['TOTAL_INCIDENTS'])}
+         (${format(',')(d['INCIDENTS_PER_STUDENT'])}% incidents per student)`);
 
     // ADD PERCENTILE GRAPH ONLY IF A SPECIFIC SCHOOL OR SYSTEM IS CHOSEN
     // select('CONTAINER_OF_ALL_OF_THOSE').style('display', 'block')
     if (sys_sch_selection != 'All School Systems – All Schools') {
       // select('CONTAINER_OF_ALL_OF_THOSE').style('display', 'none')
+
+      // Enrollment
       enr_scale.call(axisBottom(x_scale)
         .ticks()
         .tickFormat(format('d'))
@@ -244,43 +266,67 @@ function myVis(results) {
         .attr("transform", `translate(0,${height})`)
         .text('Percentile ranking is charted above; hover for more details');
 
-      //     // SWI PERCENTILE PLOT
-      //     swi.append('g')
-      //       .attr("transform", "translate(0," + height / 2 + ")")
-      //       .call(axisBottom(x_scale)
-      //         .ticks()
-      //         .tickFormat(format('d'))
-      //         .tickValues([0, 25, 50, 75, 100]));
+      // Students with Incidents
+      swi_scale.call(axisBottom(x_scale)
+        .ticks()
+        .tickFormat(format('d'))
+        .tickValues([0, 25, 50, 75, 100]));
 
-      //     swi
-      //       .append("g")
-      //       .selectAll("dot")
-      //       .data(d_summary)
-      //       .enter()
-      //       .append("circle")
-      //       .attr("cx", x_scale(d_summary[0]['%_SWI_PCT']))
-      //       .attr("cy", y_scale(1))
-      //       .attr("r", 5)
-      //       .attr("class", "pct-dot");
+      swi_circles
+        .selectAll(".swi_circle")
+        .data(d_summary)
+        .join("circle")
+        .attr("cx", d => x_scale(d['%_SWI_PCT']))
+        .attr("cy", y_scale(1))
+        .attr("r", 6)
+        .attr('class', 'swi_circle')
+        .attr('fill', '#02323B')
+        .attr('stroke', 'black')
+        .on('mouseover', function mouseEnter(e) { //needs attention
+          select(this)
+            .attr('fill', '#FCA375')
+          swi_container.append('div')
+            .attr('id', 'swi_hover')
+            .attr('class', 'tooltip')
+            .style('top', '-5px')
+            .style('left', `${x_scale(d_summary[0]['%_SWI_PCT']) + 20}px`)
+            .text(d_summary[0]['%_SWI_STATEMENT']);
+        }).on('mouseout', function mouseEnter(e) {
+          select(this)
+            .attr('fill', '#02323B')
+          select('#swi_hover').remove();
+        });
 
-      //     ips.append('g')
-      //       .attr("transform", "translate(0," + height / 2 + ")")
-      //       .call(axisBottom(x_scale)
-      //         .ticks()
-      //         .tickFormat(format('d'))
-      //         .tickValues([0, 25, 50, 75, 100]));
+      // Incidents per Student
+      ips_scale.call(axisBottom(x_scale)
+        .ticks()
+        .tickFormat(format('d'))
+        .tickValues([0, 25, 50, 75, 100]));
 
-      //     ips
-      //       .append("g")
-      //       .selectAll("dot")
-      //       .data(d_summary)
-      //       .enter()
-      //       .append("circle")
-      //       .attr("cx", x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']))
-      //       .attr("cy", y_scale(1))
-      //       .attr("r", 5)
-      //       .attr("class", "pct-dot");
-
+      ips_circles
+        .selectAll(".ips_circle")
+        .data(d_summary)
+        .join("circle")
+        .attr("cx", d => x_scale(d['INCIDENTS_PER_STUDENT_PCT']))
+        .attr("cy", y_scale(1))
+        .attr("r", 6)
+        .attr('class', 'ips_circle')
+        .attr('fill', '#02323B')
+        .attr('stroke', 'black')
+        .on('mouseover', function mouseEnter(e) { //needs attention
+          select(this)
+            .attr('fill', '#FCA375')
+          ips_container.append('div')
+            .attr('id', 'ips_hover')
+            .attr('class', 'tooltip')
+            .style('top', '-5px')
+            .style('left', `${x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']) + 20}px`)
+            .text(d_summary[0]['INCIDENTS_PER_STUDENT_STATEMENT']);
+        }).on('mouseout', function mouseEnter(e) {
+          select(this)
+            .attr('fill', '#02323B')
+          select('#ips_hover').remove();
+        });
     }
     //   // ANNUAL TRENDS LINE GRAPH
     //   x_array = x_array.slice((4 - d_annual[0]['YEARS']), 4)
