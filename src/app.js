@@ -1,5 +1,5 @@
 import { csv } from 'd3-fetch';
-import { select, transition } from 'd3-selection';
+import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { axisBottom } from 'd3-axis';
 import { line } from 'd3-shape';
