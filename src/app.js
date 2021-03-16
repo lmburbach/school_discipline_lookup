@@ -21,8 +21,7 @@ function myVis(results) {
   const subgroups = [...new Set(subgroup.map(item => item['SUBGROUP_CATEGORY']))];
   const schools = [...new Set(subgroup.map(item => item['SYS_SCH_lookup']))];
 
-  // let temp_sys_sch = 'All School Systems – All Schools'; // change to all as default
-  let temp_sys_sch = 'Appling County – All Schools';
+  let temp_sys_sch = 'All School Systems – All Schools';
   let subgroup_selection = 'Disability Status';
 
   const sub_dropdown = select('#left-1')
@@ -65,12 +64,12 @@ function myVis(results) {
 
   // STATE
   const summary_title = select('#left-title');
-  const margin = { top: 20, bottom: 20, left: 10, right: 10 },
+  const margin = { top: 0, bottom: 20, left: 10, right: 10 },
     width = 450 - margin.left - margin.right,
     height = 100 - margin.top - margin.bottom;
 
   const x_scale = scaleLinear().domain([0, 100]).range([0, width])
-  const y_scale = scaleLinear().domain([0, 10]).range([17, 0])
+  const y_scale = scaleLinear().domain([0, 10]).range([10, 0])
 
   // Enrollment Percentile Plot
   const enr_container = select("#left-3")
@@ -84,7 +83,7 @@ function myVis(results) {
     .attr("height", height + margin.top + margin.bottom)
     .append('g')
     .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+      "translate(" + margin.left + ", 3)");
   const enr_scale = enr
     .append('g')
     .attr("transform", "translate(0," + height / 2 + ")");  // UPTICK
@@ -103,7 +102,7 @@ function myVis(results) {
     .attr("height", height + margin.top + margin.bottom)
     .append('g')
     .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+      "translate(" + margin.left + ", 3)");
   const swi_scale = swi
     .append('g')
     .attr("transform", "translate(0," + height / 2 + ")");  // UPTICK
@@ -121,13 +120,13 @@ function myVis(results) {
     .attr("height", height + margin.top + margin.bottom)
     .append('g')
     .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+      "translate(" + margin.left + ", 3)");
   const ips_scale = ips
     .append('g')
-    .attr("transform", "translate(0," + height / 2 + ")");  // UPTICK
+    .attr("transform", "translate(0," + height / 2 + ")");
   const ips_circles = ips.append('g');
 
-  // Annual Trends
+  // Annual Trends --> HERE
   const trends_title = select('#left-title2');
   trends_title.append('chart-title')
     .attr('class', 'chart-title')
@@ -142,8 +141,13 @@ function myVis(results) {
     .append('g')
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
+  const line_axis = line_svg
+    .append('g')
+    .attr("transform", "translate(0," + l_height + ")");
+  const line_path = line_svg.append("path");
+  const line_dots = line_svg.append("g");
+  const line_labels = line_svg.append("g");
 
-  let x_array = [2014, 2015, 2016, 2017]
 
   // STATE FOR PROPORTION PLOT
   const x0 = 60;
@@ -194,6 +198,14 @@ function myVis(results) {
       }
     }
 
+    let show = ''
+    if (sys_sch_selection != 'All School Systems – All Schools') {
+      show = 'block';
+    }
+    else {
+      show = 'none';
+    }
+
     summary_title.selectAll('st')
       .data(d_summary)
       .join('st')
@@ -207,6 +219,44 @@ function myVis(results) {
       .attr('class', 'chart-title-small')
       .text(d => `Enrollment: ${format(',')(d['ENROLLMENT'])} students`);
 
+    enr_scale.call(axisBottom(x_scale)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]))
+      .style('display', show);
+
+    enr_circles
+      .selectAll(".enr_circle")
+      .data(d_summary)
+      .join("circle")
+      .attr("cx", d => x_scale(d['ENROLLMENT_PCT']))
+      .attr("cy", y_scale(1))
+      .attr("r", 6)
+      .attr('class', 'enr_circle')
+      .attr('fill', '#02323B')
+      .attr('stroke', 'black')
+      .style('display', show)
+      .on('mouseover', function mouseEnter(e) { //needs attention
+        select(this)
+          .attr('fill', '#FCA375')
+        enr_container.append('div')
+          .attr('id', 'enr_hover')
+          .attr('class', 'tooltip')
+          .style('top', '-5px')
+          .style('left', `${x_scale(d_summary[0]['ENROLLMENT_PCT']) + 20}px`)
+          .text(d_summary[0]['ENROLLMENT_STATEMENT']);
+      }).on('mouseout', function mouseEnter(e) {
+        select(this)
+          .attr('fill', '#02323B')
+        select('#enr_hover').remove();
+      });
+
+    enr_footnote
+      .attr('class', 'footnote')
+      .attr("transform", `translate(0,${height})`)
+      .text('Percentile ranking is charted above; hover for more details')
+      .style('display', show);
+
     // Students with Incidents
     swi_title.selectAll('swi_text')
       .data(d_summary)
@@ -216,183 +266,140 @@ function myVis(results) {
         Students with Incidents: ${format(',')(d['STUDENTS_WITH_INCIDENTS'])} students
          (${format(',')(d['%_SWI'])}% of students)`);
 
+    swi_scale.call(axisBottom(x_scale)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]))
+      .style('display', show);
+
+    swi_circles
+      .selectAll(".swi_circle")
+      .data(d_summary)
+      .join("circle")
+      .attr("cx", d => x_scale(d['%_SWI_PCT']))
+      .attr("cy", y_scale(1))
+      .attr("r", 6)
+      .attr('class', 'swi_circle')
+      .attr('fill', '#02323B')
+      .attr('stroke', 'black')
+      .style('display', show)
+      .on('mouseover', function mouseEnter(e) { //needs attention
+        select(this)
+          .attr('fill', '#FCA375')
+        swi_container.append('div')
+          .attr('id', 'swi_hover')
+          .attr('class', 'tooltip')
+          .style('top', '-5px')
+          .style('left', `${x_scale(d_summary[0]['%_SWI_PCT']) + 20}px`)
+          .text(d_summary[0]['%_SWI_STATEMENT']);
+      }).on('mouseout', function mouseEnter(e) {
+        select(this)
+          .attr('fill', '#02323B')
+        select('#swi_hover').remove();
+      });
+
     // Incidents per Student
     ips_title.selectAll('ips_text')
       .data(d_summary)
       .join('ips_text')
       .attr('class', 'chart-title-small')
       .text(d => `
-        Total Incidents: ${format(',')(d['TOTAL_INCIDENTS'])}
-         (${format(',')(d['INCIDENTS_PER_STUDENT'])}% incidents per student)`);
+        Total Incidents: ${format(',')(d['TOTAL_INCIDENTS'])} incidents
+         (${format(',')(d['INCIDENTS_PER_STUDENT'])} incidents per student)`);
 
-    // ADD PERCENTILE GRAPH ONLY IF A SPECIFIC SCHOOL OR SYSTEM IS CHOSEN
-    // select('CONTAINER_OF_ALL_OF_THOSE').style('display', 'block')
-    if (sys_sch_selection != 'All School Systems – All Schools') {
-      // select('CONTAINER_OF_ALL_OF_THOSE').style('display', 'none')
+    ips_scale.call(axisBottom(x_scale)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([0, 25, 50, 75, 100]))
+      .style('display', show);
 
-      // Enrollment
-      enr_scale.call(axisBottom(x_scale)
-        .ticks()
-        .tickFormat(format('d'))
-        .tickValues([0, 25, 50, 75, 100]));
+    ips_circles
+      .selectAll(".ips_circle")
+      .data(d_summary)
+      .join("circle")
+      .attr("cx", d => x_scale(d['INCIDENTS_PER_STUDENT_PCT']))
+      .attr("cy", y_scale(1))
+      .attr("r", 6)
+      .attr('class', 'ips_circle')
+      .attr('fill', '#02323B')
+      .attr('stroke', 'black')
+      .style('display', show)
+      .on('mouseover', function mouseEnter(e) { //needs attention
+        select(this)
+          .attr('fill', '#FCA375')
+        ips_container.append('div')
+          .attr('id', 'ips_hover')
+          .attr('class', 'tooltip')
+          .style('top', '-5px')
+          .style('left', `${x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']) + 20}px`)
+          .text(d_summary[0]['INCIDENTS_PER_STUDENT_STATEMENT']);
+      }).on('mouseout', function mouseEnter(e) {
+        select(this)
+          .attr('fill', '#02323B')
+        select('#ips_hover').remove();
+      });
 
-      enr_circles
-        .selectAll(".enr_circle")
-        .data(d_summary)
-        .join("circle")
-        .attr("cx", d => x_scale(d['ENROLLMENT_PCT']))
-        .attr("cy", y_scale(1))
-        .attr("r", 6)
-        .attr('class', 'enr_circle')
-        .attr('fill', '#02323B')
-        .attr('stroke', 'black')
-        .on('mouseover', function mouseEnter(e) { //needs attention
-          select(this)
-            .attr('fill', '#FCA375')
-          enr_container.append('div')
-            .attr('id', 'enr_hover')
-            .attr('class', 'tooltip')
-            .style('top', '-5px')
-            .style('left', `${x_scale(d_summary[0]['ENROLLMENT_PCT']) + 20}px`)
-            .text(d_summary[0]['ENROLLMENT_STATEMENT']);
-        }).on('mouseout', function mouseEnter(e) {
-          select(this)
-            .attr('fill', '#02323B')
-          select('#enr_hover').remove();
-        });
+    // ANNUAL TRENDS LINE GRAPH --> HERE
+    let x_array = [2014, 2015, 2016, 2017]
+    x_array = x_array.slice((4 - d_annual[0]['YEARS']), 4)
+    let x = scaleLinear().domain([(min(x_array) - .5), (max(x_array) + .5)]).range([0, width])
 
-      enr_footnote
-        .attr('class', 'footnote')
-        .attr("transform", `translate(0,${height})`)
-        .text('Percentile ranking is charted above; hover for more details');
+    let y_arr = [d_annual[0]['2014'], d_annual[0]['2015'], d_annual[0]['2016'], d_annual[0]['2017']]
+    y_arr = y_arr.slice((4 - d_annual[0]['YEARS']), 4)
+    let y_array = y_arr.map((i) => Number(i));
 
-      // Students with Incidents
-      swi_scale.call(axisBottom(x_scale)
-        .ticks()
-        .tickFormat(format('d'))
-        .tickValues([0, 25, 50, 75, 100]));
+    console.log(y_array)
 
-      swi_circles
-        .selectAll(".swi_circle")
-        .data(d_summary)
-        .join("circle")
-        .attr("cx", d => x_scale(d['%_SWI_PCT']))
-        .attr("cy", y_scale(1))
-        .attr("r", 6)
-        .attr('class', 'swi_circle')
-        .attr('fill', '#02323B')
-        .attr('stroke', 'black')
-        .on('mouseover', function mouseEnter(e) { //needs attention
-          select(this)
-            .attr('fill', '#FCA375')
-          swi_container.append('div')
-            .attr('id', 'swi_hover')
-            .attr('class', 'tooltip')
-            .style('top', '-5px')
-            .style('left', `${x_scale(d_summary[0]['%_SWI_PCT']) + 20}px`)
-            .text(d_summary[0]['%_SWI_STATEMENT']);
-        }).on('mouseout', function mouseEnter(e) {
-          select(this)
-            .attr('fill', '#02323B')
-          select('#swi_hover').remove();
-        });
-
-      // Incidents per Student
-      ips_scale.call(axisBottom(x_scale)
-        .ticks()
-        .tickFormat(format('d'))
-        .tickValues([0, 25, 50, 75, 100]));
-
-      ips_circles
-        .selectAll(".ips_circle")
-        .data(d_summary)
-        .join("circle")
-        .attr("cx", d => x_scale(d['INCIDENTS_PER_STUDENT_PCT']))
-        .attr("cy", y_scale(1))
-        .attr("r", 6)
-        .attr('class', 'ips_circle')
-        .attr('fill', '#02323B')
-        .attr('stroke', 'black')
-        .on('mouseover', function mouseEnter(e) { //needs attention
-          select(this)
-            .attr('fill', '#FCA375')
-          ips_container.append('div')
-            .attr('id', 'ips_hover')
-            .attr('class', 'tooltip')
-            .style('top', '-5px')
-            .style('left', `${x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']) + 20}px`)
-            .text(d_summary[0]['INCIDENTS_PER_STUDENT_STATEMENT']);
-        }).on('mouseout', function mouseEnter(e) {
-          select(this)
-            .attr('fill', '#02323B')
-          select('#ips_hover').remove();
-        });
+    let data = []
+    for (let i = 0; i < x_array.length; i++) {
+      let ob = { x: x_array[i], y: y_array[i] }
+      data.push(ob)
     }
-    //   // ANNUAL TRENDS LINE GRAPH
-    //   x_array = x_array.slice((4 - d_annual[0]['YEARS']), 4)
-    //   let x = scaleLinear().domain([(min(x_array) - .5), (max(x_array) + .5)]).range([0, width])
 
-    //   let y_arr = [d_annual[0]['2014'], d_annual[0]['2015'], d_annual[0]['2016'], d_annual[0]['2017']]
-    //   y_arr = y_arr.slice((4 - d_annual[0]['YEARS']), 4)
-    //   let y_array = y_arr.map((i) => Number(i));
+    line_axis.attr("transform", "translate(0," + l_height + ")").call(axisBottom(x)
+      .ticks()
+      .tickFormat(format('d'))
+      .tickValues([2014, 2015, 2016, 2017]));
 
-    //   let ydim = [min(y_array), max(y_array)];
+    let cushion = (max(y_array) - min(y_array))
 
-    //   let data = []
-    //   for (let i = 0; i < x_array.length; i++) {
-    //     let ob = { x: x_array[i], y: y_array[i] }
-    //     data.push(ob)
-    //   }
+    let y = scaleLinear().domain([(min(y_array)) - cushion, (max(y_array) + cushion)]).range([l_height, 0])
 
-    //   line_svg.append('g')
-    //     .attr("transform", "translate(0," + l_height + ")")
-    //     .call(axisBottom(x)
-    //       .ticks()
-    //       .tickFormat(format('d'))
-    //       .tickValues([2014, 2015, 2016, 2017]));
+    line_path
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", '#FCA375')
+      .attr("stroke-width", 2)
+      .attr("d", line()
+        .x(function (d) { return x(d.x) })
+        .y(function (d) { return y(d.y) }));
 
-    //   let y = scaleLinear().domain([ydim[0] - 30, + ydim[1] + 10]).range([l_height, 0])
+    line_dots
+      .selectAll(".dot")
+      .data(data)
+      .join("circle")
+      .attr('class', 'dot')
+      .attr("cx", function (d) { return x(d.x) })
+      .attr("cy", function (d) { return y(d.y) })
+      .attr("r", 3)
+      .attr("fill", "#FCA375");
 
-    //   line_svg.append("path")
-    //     .datum(data)
-    //     .attr("fill", "none")
-    //     .attr("stroke", 'steelBlue')
-    //     .attr("stroke-width", 2)
-    //     .attr("d", line()
-    //       .x(function (d) { return x(d.x) })
-    //       .y(function (d) { return y(d.y) }));
-
-    //   line_svg
-    //     .append("g")
-    //     .selectAll("dot")
-    //     .data(data)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("cx", function (d) { return x(d.x) })
-    //     .attr("cy", function (d) { return y(d.y) })
-    //     .attr("r", 3)
-    //     .attr("fill", "steelBlue");
-
-    //   line_svg.selectAll("annotation")
-    //     .append('g')
-    //     .data(data)
-    //     .enter()
-    //     .append("text")
-    //     .attr('class', 'annotation')
-    //     .text(function (d) { return format(",")(d.y) })
-    //     .attr('x', function (d) { return x(d.x) - 8 })
-    //     .attr('y', function (d) { return y(d.y) + 12 });
-    //   // come back to this if time: issue is bottom margin
-    //   // .attr('y', function (d, i) {
-    //   //   if (i < (data.length - 1)) {
-    //   //     console.log(d, i)
-    //   //     const offset = d.y > data[i + 1].y ? -15 : 15;
-    //   //     return y(d.y + offset);
-    //   //   }
-    //   //   else {
-    //   //     return y(d.y) + 15;
-    //   //   }
-    //   // });
+    line_labels
+      .selectAll(".annotation")
+      .data(data)
+      .join("text")
+      .attr('class', 'annotation')
+      .text(function (d) { return format(",")(d.y) })
+      .attr('x', function (d) { return x(d.x) - 10 })
+      .attr('y', function (d, i) {
+        if (i === 0) {
+          return y(d.y) - 15;
+        }
+        else {
+          const offset = d.y > data[i - 1].y ? -15 : 15;
+          return y(d.y) + offset;
+        }
+      })
 
     //   // PROPORTION PLOT
     //   let overall_max = d_subgroup[(d_subgroup.length - 1)]['CUM_%_OVERALL']
