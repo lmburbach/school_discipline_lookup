@@ -45,13 +45,14 @@ p {
   height: 105%;
   border-color: blue;
   display:flex;
-justify-content: left;
+justify-content: space-around;
 }
 
-#left-box {  margin-left: 1%;
+#left-box {
+  margin-left: 1%;
   margin-right: 1%;
   height: 650px;
-  width: 500px;
+  width: 450px;
   border-color: blue;
   display: flex;
   flex-direction: column;
@@ -71,8 +72,7 @@ justify-content: left;
 }
 
 #left-1, #left-2 {
-  padding-bottom: 1pt;
-  padding-top: 1pt;
+  margin-top: 5pt;
 }
 
 #right-box {  margin-left: 1%;
@@ -116,10 +116,10 @@ justify-content: left;
 
 #footer{
 background-color: lightgray;
-text-align: right;
+text-align: left;
+padding-left: 2%;
 padding-top: 5pt;
 padding-bottom: 5pt;
-padding-right: 10pt;
 width: 100%;
 }
 
@@ -151,6 +151,9 @@ width: 100%;
   font-family: sans-serif;
   font-size: 8pt;
   background-color: white;
+  border-color:white;
+  padding-top: 2pt;
+  margin-top: 2pt;
 }
 
 .legend-title{
@@ -185,45 +188,41 @@ width: 100%;
   font-weight: lighter;
 }
 
-.rect {
-  fill:deepskyblue;
-}
-
-.first {
-  fill: red;
+.N_SWD, .N_FRL, .N_EL, .ASIAN {
+  fill: #34495e;
   stroke: black;
 }
 
-.second {
+.SWD, .MALE, .NHPI{
   fill: orange;
   stroke: black;
 }
 
-.third {
-  fill:yellow;
+.FRL, .AIAN{
+  fill:#e74c3c;
   stroke: black;
 }
 
-.fourth {
-  fill: green;
+.TWO {
+  fill: #95a5a6;
   stroke: black;
 }
 
-.fifth {
-  fill: blue;
+.HISPANIC {
+  fill: #3498db;
   stroke: black;
 }
 
-.sixth {
-  fill: indigo;
+.WHITE,.FEMALE{
+  fill: #2ecc71;
   stroke: black;
 }
 
-.seventh {
-  fill: violet;
+.BLACK,.EL {
+  fill: #9b59b6;
   stroke: black;
 }
-/* //try */
+
 .tooltip {
   position: absolute;
   text-align: center;
