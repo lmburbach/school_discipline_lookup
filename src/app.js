@@ -88,6 +88,24 @@ function myVis(results) {
     .attr('id', 'tooltip')
     .style('pointer-events', 'none');
 
+  const swi = select("#left-4")
+    .append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top)
+    .append('g')
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")")
+    ;
+
+  const ips = select("#left-5")
+    .append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top)
+    .append('g')
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")")
+    ;
+
   function render() {
 
     // Filter data based on user selection
@@ -113,121 +131,110 @@ function myVis(results) {
       }
     }
 
+    // let show_pcts = ;
+
     // CLEAR EXISTING STUFF
-
-
     summary_title.append('chart-title') //adds to exsiting text – I want to remove it
       .attr('class', 'chart-title')
       .text(`${d_summary[0]['SYS_SCH']}`);
 
-    // ENROLLMENT PERCENTILE PLOT
+    // ENROLLMENT SUMMARY
     enr.append('text') // update based on selection
       .attr('class', 'chart-title-small')
       .text(`Enrollment: ${format(',')(d_summary[0]['ENROLLMENT'])}`);
 
-    enr.append('g') // update based on selection; don't include if selection is All Schools
-      .attr("transform", "translate(0," + height / 2 + ")")
-      .call(axisBottom(x_scale)
-        .ticks()
-        .tickFormat(format('d'))
-        .tickValues([0, 25, 50, 75, 100]));
+    //STUDENTS WITH INCIDENTS PERCENTILE PLOT
+    swi.append('text')
+      .attr('class', 'chart-title-small')
+      .text(`Students with Incidents: ${format(',')(d_summary[0]['STUDENTS_WITH_INCIDENTS'])} (${format(',')(d_summary[0]['%_SWI'])}% of students)`);
 
-    enr // update based on selection; don't include if selection is All Schools
-      .append("g")
-      .selectAll("dot")
-      .data(d_summary)
-      .enter()
-      .append("circle")
-      .attr("cx", x_scale(d_summary[0]['ENROLLMENT_PCT']))
-      .attr("cy", y_scale(1))
-      .attr("r", 6)
-      .attr("class", "pct-dot")
-      .on('mouseenter', function mouseEnter(e) { //not in the right position
-        select(this).attr('fill', 'green')
-        select('#tooltip')
-          .style('top', y_scale(1))
-          .style('left', x_scale(d_summary[0]['ENROLLMENT_PCT']))
-          .text(d_summary[0]['ENROLLMENT_STATEMENT']);
-      }).on('mouseleave', function mouseEnter(d) {
-        select(this).attr('fill', 'steelblue');
-        select('#tooltip').text('');
-      });
+    // TOTAL INCIDENTS
+    ips.append('text')
+      .attr('class', 'chart-title-small')
+      .text(`Total Incidents: ${format(',')(d_summary[0]['TOTAL_INCIDENTS'])} (${format(',')(d_summary[0]['INCIDENTS_PER_STUDENT'])} incidents per student)`);
 
-    enr // update based on selection; don't include if selection is All Schools
-      .append('text')
-      .attr('class', 'footnote')
-      .attr("transform", `translate(0,${height})`)
-      .text('Percentile ranking is charted above; hover for more details');
+    if (sys_sch_selection != 'All School Systems – All Schools') {
+      // ENROLLMENT PERCENTILES
+      enr.append('g')
+        .attr("transform", "translate(0," + height / 2 + ")")
+        .call(axisBottom(x_scale)
+          .ticks()
+          .tickFormat(format('d'))
+          .tickValues([0, 25, 50, 75, 100]));
 
+      enr
+        .append("g")
+        .selectAll("dot")
+        .data(d_summary)
+        .enter()
+        .append("circle")
+        .attr("cx", x_scale(d_summary[0]['ENROLLMENT_PCT']))
+        .attr("cy", y_scale(1))
+        .attr("r", 6)
+        .attr("class", "pct-dot")
+        .on('mouseenter', function mouseEnter(e) { //not in the right position
+          select(this).attr('fill', 'green')
+          select('#tooltip')
+            .style('top', y_scale(1))
+            .style('left', x_scale(d_summary[0]['ENROLLMENT_PCT']))
+            .text(d_summary[0]['ENROLLMENT_STATEMENT']);
+        }).on('mouseleave', function mouseEnter(d) {
+          select(this).attr('fill', 'steelblue');
+          select('#tooltip').text('');
+        });
 
+      enr
+        .append('text')
+        .attr('class', 'footnote')
+        .attr("transform", `translate(0,${height})`)
+        .text('Percentile ranking is charted above; hover for more details');
+
+      // SWI PERCENTILE PLOT
+      swi.append('g')
+        .attr("transform", "translate(0," + height / 2 + ")")
+        .call(axisBottom(x_scale)
+          .ticks()
+          .tickFormat(format('d'))
+          .tickValues([0, 25, 50, 75, 100]));
+
+      swi
+        .append("g")
+        .selectAll("dot")
+        .data(d_summary)
+        .enter()
+        .append("circle")
+        .attr("cx", x_scale(d_summary[0]['%_SWI_PCT']))
+        .attr("cy", y_scale(1))
+        .attr("r", 5)
+        .attr("class", "pct-dot");
+
+      ips.append('g')
+        .attr("transform", "translate(0," + height / 2 + ")")
+        .call(axisBottom(x_scale)
+          .ticks()
+          .tickFormat(format('d'))
+          .tickValues([0, 25, 50, 75, 100]));
+
+      ips
+        .append("g")
+        .selectAll("dot")
+        .data(d_summary)
+        .enter()
+        .append("circle")
+        .attr("cx", x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']))
+        .attr("cy", y_scale(1))
+        .attr("r", 5)
+        .attr("class", "pct-dot");
+
+    }
   }
 
   // render()
-  let show_all = true // update to be if the SYS_SCH != "ALL_SCHOOL_SYSTEMS - ALL_SCHOOLS"
 
-  // // // STUDENTS WITH INCIDENTS PERCENTILE PLOT
-  // const swi = select("#left-4")
-  //   .append('svg')
-  //   .attr("width", width + margin.left + margin.right)
-  //   .attr("height", height + margin.top)
-  //   .append('g')
-  //   .attr("transform",
-  //     "translate(" + margin.left + "," + margin.top + ")")
-  //   ;
 
-  // swi.append('text')
-  //   .attr('class', 'chart-title-small')
-  //   .text(`Students with Incidents: ${format(',')(d_summary[0]['STUDENTS_WITH_INCIDENTS'])} (${format(',')(d_summary[0]['%_SWI'])}% of students)`);
 
-  // swi.append('g')
-  //   .attr("transform", "translate(0," + height / 2 + ")")
-  //   .call(axisBottom(x_scale)
-  //     .ticks()
-  //     .tickFormat(format('d'))
-  //     .tickValues([0, 25, 50, 75, 100]));
 
-  // swi
-  //   .append("g")
-  //   .selectAll("dot")
-  //   .data(d_summary)
-  //   .enter()
-  //   .append("circle")
-  //   .attr("cx", x_scale(d_summary[0]['%_SWI_PCT']))
-  //   .attr("cy", y_scale(1))
-  //   .attr("r", 5)
-  //   .attr("class", "pct-dot");
 
-  // // TOTAL INCIDENTS
-  // const ips = select("#left-5")
-  //   .append('svg')
-  //   .attr("width", width + margin.left + margin.right)
-  //   .attr("height", height + margin.top)
-  //   .append('g')
-  //   .attr("transform",
-  //     "translate(" + margin.left + "," + margin.top + ")")
-  //   ;
-
-  // ips.append('text')
-  //   .attr('class', 'chart-title-small')
-  //   .text(`Total Incidents: ${format(',')(d_summary[0]['TOTAL_INCIDENTS'])} (${format(',')(d_summary[0]['INCIDENTS_PER_STUDENT'])} incidents per student)`);
-
-  // ips.append('g')
-  //   .attr("transform", "translate(0," + height / 2 + ")")
-  //   .call(axisBottom(x_scale)
-  //     .ticks()
-  //     .tickFormat(format('d'))
-  //     .tickValues([0, 25, 50, 75, 100]));
-
-  // ips
-  //   .append("g")
-  //   .selectAll("dot")
-  //   .data(d_summary)
-  //   .enter()
-  //   .append("circle")
-  //   .attr("cx", x_scale(d_summary[0]['INCIDENTS_PER_STUDENT_PCT']))
-  //   .attr("cy", y_scale(1))
-  //   .attr("r", 5)
-  //   .attr("class", "pct-dot");
 
   // // ANNUAL TRENDS LINE GRAPH
   // const trends_title = select('#left-title2');
