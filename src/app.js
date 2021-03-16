@@ -215,12 +215,13 @@ function myVis(results) {
         .tickValues([0, 25, 50, 75, 100]));
 
       enr_circles
-        .selectAll("enr_circle")
+        .selectAll(".enr_circle")
         .data(d_summary)
         .join("circle")
         .attr("cx", d => x_scale(d['ENROLLMENT_PCT']))
         .attr("cy", y_scale(1))
         .attr("r", 6)
+        .attr('class', 'enr_circle')
         .attr('fill', '#02323B')
         .attr('stroke', 'black')
         .on('mouseover', function mouseEnter(e) { //needs attention
