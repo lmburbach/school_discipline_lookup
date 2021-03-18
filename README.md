@@ -1,58 +1,20 @@
-# Dynamic Project Scaffold
+# School Discipline in the State of Georgia
 
-In this folder I've provided an example project that enables you to use modern javascript tooling with as little effort as possible. This scaffold includes
+The published version of this site can be viewed at https://lmburbach.github.io/school_discipline_lookup/
 
-- a dev server that combines javascript modules and presents them to the browser. This comes with autoreload for free! It's great.
-- linters and autoformaters so you'll be able to check if your writing well styled javascript code. I have some pretty strong linting in here. You can disable them if you want, but you'll be judged.
+This applications serves as a dashboard through which users can:
 
+* select a school system or school in the State of Georgia,
+* choose from any of the following student subgroups: disability status, economic status, English learner status, gender, and race/ethnicity,
+* explore a summary of the school system/school's enrollment and frequency of discipline incidents in 2017 and trends in incidents as early as 2014, and
+* compare a subgroup's proportion in the overall population ot that of the disciplined student population to identify which groups are over or underrepresented in the disciplined population relative to their share of enrollment.
 
-
-## Setup
-
-Make sure you have npm/node/yarn installed.
-
-```sh
-npm install
-# then
-npm run start
-
-# or if yarn-ing
-yarn
-# then
-yarn start
-```
+## Data Sources
+*[View Data] (https://github.com/lmburbach/school_discipline_lookup/tree/main/data)*
+Student Discipline Data (by year and by subgroup): Georgia Governor's Office of Student Achievement, [Downloadable Data, K-12 Student Discipline] (https://gosa.georgia.gov/report-card-dashboards-data/downloadable-data)
+Additional Data on Enrollment by Race: Urban Institute, [Education Data Explorer](https://educationdata.urban.org/data-explorer/)
 
 
-You will need to be explicit about your imports, eg
-```js
-import {functionFromModule} from 'target-module';
-```
-
-In this scaffold I have not installed any d3 packages. Some helpful ones (read the ones I usually end up using) are d3-selection, d3-scale, and d3-shape. To add one of these packages just do
-
-```sh
-npm install --save PACKAGENAME
-
-# or if yarning
-yarn add PACKAGENAME
-```
-
-
-## Usage
-
-Development:
-
-Step 1: Do all of your work in src. There is no step 2.
-
-Production:
-
-There are currently two easy ways to deploy this scaffold onto the internet.  
-
-### Netlify
-
-Netlify is an excellent company that tries to make the dev process as easy as possible. The way you deploy this scaffold there is get an account, start a new project, point it to the relevant github folder (that contains just this scaffold!), set the build command to be 'yarn build' and that's it.
-
-
-### GH Pages
-
-gh-pages is a wonderful resource for doing web-development, and allows you to have classy YOU_PERSONAL_DOMAIN/projectname type links. You can deploy this scaffold there by running 'yarn build' in your command line, commiting the modified file, and push to github. If you've configured your projects settings correct it should all just work out.
+## Notes and Acknowledgements
+Links to helpful sample charts and Stack Overflow posts are cited with in-line comments in [app.js] (https://github.com/lmburbach/school_discipline_lookup/blob/main/src/app.js).
+I would also like to thank my small group members, Jesica, Nguyen, Sarah, and Emily, and Andrew's office hours for their helpful and patient advice, feedback, and reassurance.
