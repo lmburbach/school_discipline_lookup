@@ -265,7 +265,6 @@ function myVis(results) {
     .text("Help me interpret this chart")
     .attr('class', 'help-text')
     .on('mouseover', function mouseEnter(e) {
-      console.log(e)
       svg_container.append('div')
         .attr('id', 'help_hover')
         .attr('class', 'help-tooltip')
@@ -495,7 +494,7 @@ function myVis(results) {
       .attr('x', function (d) { return x(d.x) - 10 })
       .attr('y', function (d, i) {
         if (i === 0) {
-          return y(d.y) - 15;
+          return y(d.y) + 15;
         }
         else {
           const offset = d.y > data[i - 1].y ? -15 : 15;
@@ -740,7 +739,6 @@ function myVis(results) {
 
     if (d_subgroup.length >= 6) {
       let i = 4
-      console.log(d_subgroup[i + 1])
       poly_6
         .attr('points', `${x0},${scooch + (d_subgroup[i]['CUM_%_OVERALL'] / overall_max) * plotHeight}
               ${x1}, ${scooch + (d_subgroup[i]['CUM_%_DISC'] / disc_max) * plotHeight}
@@ -839,22 +837,20 @@ function myVis(results) {
       right_7.style('display', 'none')
     }
 
-    const note = "Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population, whether under or overrepresented."
+    const note = "Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The takeaway statement below the visualization summarizes the discrepancy for the group that is most overrepresented in the disciplined population relative to their overall enrollment."
     if (d_subgroup[0]['SUBGROUP_CATEGORY'] === 'Race/Ethnicity') {
-      // THIS IS NEW NEEDS TESTING
-      // let over_only = [];
-      // for (let i = 0; i < d_subgroup.length; i++) {
-      //   if (d_subgroup[i]['OVER/UNDER'] === 'overrepresented') {
-      //     over_only.push(subgroup[i]);
-      //   }
-      // }
-      // console.log(over_only)
-      // const PPTS = over_only.map(a => a['PPTS']);
-      // const PPTS = d_subgroup.map(a => a['PPTS']);
+      let over_only = [];
+      for (let i = 0; i < d_subgroup.length; i++) {
+        if (d_subgroup[i]['OVER/UNDER'] === 'overrepresented') {
+          over_only.push(d_subgroup[i]);
+        }
+      }
+      const PPTS_array = over_only.map(a => a['PPTS']);
+      const PPTS = PPTS_array.map((i) => Number(i));
       // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
       const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
       overunder
-        .text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`);
+        .text(`${over_only[idx]['SUBGROUP']} students are ${over_only[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${over_only[idx]['PPTS']} percentage points.`);
       select('#right-bottom2')
         .attr('class', 'footnote')
         .text("Notes: The Governor's Office of Student Achievement discipline data includes the following Race/Ethnicity groups: American Indian or Alaskan Native, Asian, Black, Hispanic, Native Hawaiian or Other Pacific Islander, Two or More races, and White. " + note);

@@ -33,6 +33,10 @@ h1, h2, p {
 h2{
   font-size: 18pt;
   margin-top: 1%;
+  color: #FA8775;
+  color: #DB504A;
+  color: #D95D39;
+  color: #02323B;
   color: #FCA375;
 }
 
@@ -138,6 +142,10 @@ bottom:0px;
 
 }
 
+.ga-peach{
+  fill: #FCA375;
+
+}
 .prop-label{
   font-family: sans-serif;
   font-size: 10pt;
@@ -187,37 +195,38 @@ bottom:0px;
   font-weight: lighter;
 }
 
-.N_SWD, .N_FRL, .N_EL, .ASIAN {
+.N_SWD, .N_FRL, .N_EL, .NHPI {
   fill: #34495e;
   stroke: black;
   stroke-width: 2pt;
 }
 
-.SWD, .MALE, .NHPI{
-  fill: #D17A22;
+.SWD, .MALE, .TWO{
+  fill: #F6AE2D;
   stroke: black;
   stroke-width: 2pt;
 }
 
-.FRL, .AIAN{
+.FRL,.ASIAN {
+  /* update to two ore more raceS? */
   fill:#e74c3c;
   stroke: black;
   stroke-width: 2pt;
 }
 
-.TWO {
+ .AIAN, .NR{
   fill: #95a5a6;
   stroke: black;
   stroke-width: 2pt;
 }
 
-.HISPANIC {
+.HISPANIC,.FEMALE {
   fill: #3498db;
   stroke: black;
   stroke-width: 2pt;
 }
 
-.WHITE,.FEMALE{
+.WHITE{
   fill: #2ecc71;
   stroke: black;
   stroke-width: 2pt;
@@ -237,7 +246,7 @@ bottom:0px;
   padding-left: 5px;
   padding-right: 5px;
   font: 12px sans-serif;
-  background: #d4d4d4;
+  background: lightgray;
   border-radius: 5px;
   pointer-events: none;
   max-width: 250px;
@@ -245,7 +254,7 @@ bottom:0px;
 }
 
 .help-button{
-  fill: #d3d3d3;
+  fill: lightgray;
   stroke-width: 2px;
   stroke: black;
 
@@ -266,7 +275,7 @@ bottom:0px;
   padding-left: 7px;
   padding-right: 7px;
   font: 12px sans-serif;
-  background: #d4d4d4;
+  background: lightgray;
   border-radius: 5px;
   pointer-events: none;
   width: 250px;
