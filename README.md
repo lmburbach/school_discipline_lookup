@@ -11,10 +11,12 @@ This applications serves as a dashboard through which users can:
 
 ## Data Sources
 [View Data](https://github.com/lmburbach/school_discipline_lookup/tree/main/data)
-<br>Student Discipline Data: Georgia Governor's Office of Student Achievement, [Downloadable Data > K-12 Student Discipline](https://gosa.georgia.gov/report-card-dashboards-data/downloadable-data)
-<br>Additional Data on Enrollment by Race: Urban Institute, [Education Data Explorer](https://educationdata.urban.org/data-explorer/)
+**Sources**
+* Student Discipline Data: Georgia Governor's Office of Student Achievement, [Downloadable Data > K-12 Student Discipline](https://gosa.georgia.gov/report-card-dashboards-data/downloadable-data)
+* Additional Data on Enrollment by Race: Urban Institute, [Education Data Explorer](https://educationdata.urban.org/data-explorer/)
 
 
 ## Notes and Acknowledgements
 Links to helpful sample charts and Stack Overflow posts are cited with in-line comments in [app.js](https://github.com/lmburbach/school_discipline_lookup/blob/main/src/app.js).
-<br>I would also like to thank my small group members, Jesica, Nguyen, Sarah, and Emily, and Andrew's office hours for their helpful and patient advice, feedback, and reassurance.
+
+I would also like to thank my small group members: Jesica, Nguyen, Sarah, and Emily, and Andrew's office hours for their helpful and patient advice, feedback, and reassurance.
