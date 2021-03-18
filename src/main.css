@@ -46,14 +46,13 @@ p {
   color:black;}
 
 #app {  margin-top: 1%;
-  /* change margin-left if proportion plot is too far right */
   margin-left: 10%;
   margin-right: 2%;
   margin-bottom: 1%;
   height: 105%;
   display:flex;
-justify-content: space-around;
-align-content:center;
+  justify-content: space-around;
+  align-content:center;
 }
 
 #left-box {
@@ -142,10 +141,6 @@ bottom:0px;
 
 }
 
-.ga-peach{
-  fill: #FCA375;
-
-}
 .prop-label{
   font-family: sans-serif;
   font-size: 10pt;
