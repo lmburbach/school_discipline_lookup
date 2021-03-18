@@ -568,7 +568,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_OVERALL_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { left_2.style('display', 'none') }
 
       if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
         right_2
@@ -577,7 +577,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_DISC_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { right_2.style('display', 'none') }
     } else {
       poly_2.style('display', 'none')
       legend_2.style('display', 'none')
@@ -618,7 +618,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_OVERALL_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { left_3.style('display', 'none') }
 
       if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
         right_3
@@ -627,7 +627,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_DISC_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { right_3.style('display', 'none') }
     } else {
       poly_3.style('display', 'none')
       legend_3.style('display', 'none')
@@ -668,7 +668,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_OVERALL_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { left_4.style('display', 'none') }
       if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
         right_4
           .attr('class', 'prop-label')
@@ -676,7 +676,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_DISC_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { right_4.style('display', 'none') }
     }
     else {
       poly_4.style('display', 'none')
@@ -718,7 +718,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_OVERALL_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { left_5.style('display', 'none') }
 
       if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
         right_5
@@ -727,7 +727,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_DISC_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { right_5.style('display', 'none') }
     }
     else {
       poly_5.style('display', 'none')
@@ -771,7 +771,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_OVERALL_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { left_6.style('display', 'none') }
 
       if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
         right_6
@@ -780,7 +780,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_DISC_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { right_6.style('display', 'none') }
     } else {
       poly_6.style('display', 'none')
       legend_6.style('display', 'none')
@@ -821,7 +821,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_OVERALL'] + +d_subgroup[i]['CUM_%_OVERALL']) / (2 * overall_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_OVERALL_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { left_7.style('display', 'none') }
 
       if (d_subgroup[i + 1]['%_DISC_POP'] > 2) {
         right_7
@@ -830,7 +830,7 @@ function myVis(results) {
           .attr('y', `${scooch + ((+d_subgroup[i + 1]['CUM_%_DISC'] + +d_subgroup[i]['CUM_%_DISC']) / (2 * disc_max)) * plotHeight + 5}`)
           .text(`${format('.1f')(d_subgroup[i + 1]['%_DISC_POP'])}%`)
           .style('display', 'block');
-      }
+      } else { right_7.style('display', 'none') }
     } else {
       poly_7.style('display', 'none')
       legend_7.style('display', 'none')
