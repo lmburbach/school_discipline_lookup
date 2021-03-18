@@ -190,36 +190,43 @@ bottom:0px;
 .N_SWD, .N_FRL, .N_EL, .ASIAN {
   fill: #34495e;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .SWD, .MALE, .NHPI{
   fill: #D17A22;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .FRL, .AIAN{
   fill:#e74c3c;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .TWO {
   fill: #95a5a6;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .HISPANIC {
   fill: #3498db;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .WHITE,.FEMALE{
   fill: #2ecc71;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .BLACK,.EL {
   fill: #9b59b6;
   stroke: black;
+  stroke-width: 2pt;
 }
 
 .tooltip {

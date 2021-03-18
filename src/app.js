@@ -272,7 +272,7 @@ function myVis(results) {
         .style('top', '350px')
         .style('left', '450px')
         // https://stackoverflow.com/questions/13049050/can-you-insert-a-line-break-in-text-when-using-d3-js
-        .text("This chart compares the proportion of the overall enrollment for a group to that group's proportion of the disciplined student population (students with one or more recorded discipline incidents). If the shape's area gets larger from left to right, that means the portion of the disciplined population exceeds the portion of the enrolled population for that group (i.e. the group is overrepresented in the discipline population). If the area gets smaller, the group is underrepresented in the disciplined population relative to their enrollment. If each group's representation in the disciplined population were equal to its share of enrollment, we would expect to see no changes in height from left to right; each group's shape would just be a rectangle.");
+        .text("This chart compares the proportion of a group's overall enrollment to its proportion of the disciplined student population (students with one or more recorded discipline incidents in 2017). If the shape's area gets larger from left to right, that means the portion of the disciplined population exceeds the portion of the enrolled population for that group (i.e. the group is overrepresented in the discipline population). If the area gets smaller, the group is underrepresented in the disciplined population relative to their enrollment. If each group's representation in the disciplined population were equal to its share of enrollment, we would expect to see no changes in height from left to right; each group's shape would just be a rectangle.");
     }).on('mouseout', function mouseEnter(e) {
       select('#help_hover').remove();
     });
@@ -839,9 +839,18 @@ function myVis(results) {
       right_7.style('display', 'none')
     }
 
-    const note = "Groups not displayed have 0% student enrollment for the selected school system or school.Percentages are not shown for groups accounting for less than 2% for readability.The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population, whether under or overrepresented."
+    const note = "Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The summary statement above reflects the group with the largest discrepancy between share of enrollment and share of disciplined population, whether under or overrepresented."
     if (d_subgroup[0]['SUBGROUP_CATEGORY'] === 'Race/Ethnicity') {
-      const PPTS = d_subgroup.map(a => a['PPTS']);
+      // THIS IS NEW NEEDS TESTING
+      // let over_only = [];
+      // for (let i = 0; i < d_subgroup.length; i++) {
+      //   if (d_subgroup[i]['OVER/UNDER'] === 'overrepresented') {
+      //     over_only.push(subgroup[i]);
+      //   }
+      // }
+      // console.log(over_only)
+      // const PPTS = over_only.map(a => a['PPTS']);
+      // const PPTS = d_subgroup.map(a => a['PPTS']);
       // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
       const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
       overunder
