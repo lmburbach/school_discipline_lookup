@@ -10,9 +10,9 @@ This applications serves as a dashboard through which users can:
 * compare a subgroup's proportion in the overall population ot that of the disciplined student population to identify which groups are over or underrepresented in the disciplined population relative to their share of enrollment.
 
 ## Data Sources
-*(View Data) [https://github.com/lmburbach/school_discipline_lookup/tree/main/data]*
-Student Discipline Data (by year and by subgroup): Georgia Governor's Office of Student Achievement, (Downloadable Data, K-12 Student Discipline) [https://gosa.georgia.gov/report-card-dashboards-data/downloadable-data]
-Additional Data on Enrollment by Race: Urban Institute, (Education Data Explorer)[https://educationdata.urban.org/data-explorer/]
+*[View Data] (https://github.com/lmburbach/school_discipline_lookup/tree/main/data)*
+Student Discipline Data (by year and by subgroup): Georgia Governor's Office of Student Achievement, [Downloadable Data, K-12 Student Discipline] (https://gosa.georgia.gov/report-card-dashboards-data/downloadable-data)
+Additional Data on Enrollment by Race: Urban Institute, [Education Data Explorer](https://educationdata.urban.org/data-explorer/)
 
 
 ## Notes and Acknowledgements
