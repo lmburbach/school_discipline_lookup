@@ -341,7 +341,7 @@ function myVis(results) {
       .style('display', show)
       .on('mouseover', function mouseEnter(e) {
         select(this)
-          .attr('fill', '#FCA375')
+          .attr('fill', '#CB0177')
         enr_container.append('div')
           .attr('id', 'enr_hover')
           .attr('class', 'tooltip')
@@ -388,7 +388,7 @@ function myVis(results) {
       .style('display', show)
       .on('mouseover', function mouseEnter(e) { //needs attention
         select(this)
-          .attr('fill', '#FCA375')
+          .attr('fill', '#CB0177')
         swi_container.append('div')
           .attr('id', 'swi_hover')
           .attr('class', 'tooltip')
@@ -429,7 +429,7 @@ function myVis(results) {
       .style('display', show)
       .on('mouseover', function mouseEnter(e) { //needs attention
         select(this)
-          .attr('fill', '#FCA375')
+          .attr('fill', '#CB0177')
         ips_container.append('div')
           .attr('id', 'ips_hover')
           .attr('class', 'tooltip')
@@ -469,7 +469,7 @@ function myVis(results) {
     line_path
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", '#FCA375')
+      .attr('stroke', '#CB0177')
       .attr("stroke-width", 2)
       .attr("d", line()
         .x(function (d) { return x(d.x) })
@@ -483,7 +483,7 @@ function myVis(results) {
       .attr("cx", function (d) { return x(d.x) })
       .attr("cy", function (d) { return y(d.y) })
       .attr("r", 3)
-      .attr("fill", "#FCA375");
+      .attr("fill", "#CB0177");
 
     line_labels
       .selectAll(".annotation")

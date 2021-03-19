@@ -33,11 +33,6 @@ h1, h2, p {
 h2{
   font-size: 18pt;
   margin-top: 1%;
-  color: #FA8775;
-  color: #DB504A;
-  color: #D95D39;
-  color: #02323B;
-  color: #FCA375;
 }
 
 p {
@@ -196,7 +191,7 @@ bottom:0px;
   stroke-width: 2pt;
 }
 
-.SWD, .MALE, .TWO{
+.FEMALE, .TWO{
   fill: #F6AE2D;
   stroke: black;
   stroke-width: 2pt;
@@ -215,13 +210,13 @@ bottom:0px;
   stroke-width: 2pt;
 }
 
-.HISPANIC,.FEMALE {
+.HISPANIC, .SWD {
   fill: #3498db;
   stroke: black;
   stroke-width: 2pt;
 }
 
-.WHITE{
+.WHITE, .MALE{
   fill: #2ecc71;
   stroke: black;
   stroke-width: 2pt;
