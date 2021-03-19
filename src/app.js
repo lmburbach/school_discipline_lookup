@@ -107,6 +107,7 @@ function myVis(results) {
     .append('g')
     .attr("transform", "translate(0," + height / 2 + ")");
   const swi_circles = swi.append('g');
+  const swi_footnote = swi.append('text');
 
   // Incidents per Student
   const ips_container = select("#left-5")
@@ -125,6 +126,7 @@ function myVis(results) {
     .append('g')
     .attr("transform", "translate(0," + height / 2 + ")");
   const ips_circles = ips.append('g');
+  const ips_footnote = ips.append('text');
 
   // Annual Trends
   // https://www.d3-graph-gallery.com/graph/connectedscatter_basic.html
@@ -272,7 +274,7 @@ function myVis(results) {
         .attr('class', 'help-tooltip')
         .style('top', '350px')
         .style('left', '450px')
-        .text("This chart compares the proportion of a group's overall enrollment to its proportion of the disciplined student population (students with one or more recorded discipline incidents in 2017). If the shape's area gets larger from left to right, that means the portion of the disciplined population exceeds the portion of the enrolled population for that group (i.e. the group is overrepresented in the discipline population). If the area gets smaller, the group is underrepresented in the disciplined population relative to their enrollment. If each group's representation in the disciplined population were equal to its share of enrollment, we would expect to see no changes in height from left to right; each group's shape would just be a rectangle.");
+        .text("This chart compares the proportion of a group's overall enrollment to its proportion of the disciplined student population (students with one or more recorded discipline incidents in 2017). If the shape's area gets larger from left to right, that means the portion of the disciplined population exceeds the portion of the enrolled population for that group (i.e. the group is overrepresented in the discipline population). If the area gets smaller, the group is underrepresented in the disciplined population relative to its enrollment. If each group's representation in the disciplined population were equal to its share of enrollment, we would expect to see no changes in height from left to right; each group's shape would just be a rectangle.");
     }).on('mouseout', function mouseEnter(e) {
       select('#help_hover').remove();
     });
@@ -359,7 +361,7 @@ function myVis(results) {
     enr_footnote
       .attr('class', 'footnote')
       .attr("transform", `translate(0,${height})`)
-      .text('Percentile ranking is charted above; hover for more details')
+      .text('Percentile rank is charted above; hover for more details.')
       .style('display', show);
 
     // Students with Incidents
@@ -403,6 +405,12 @@ function myVis(results) {
         select('#swi_hover').remove();
       });
 
+    swi_footnote
+      .attr('class', 'footnote')
+      .attr("transform", `translate(0,${height})`)
+      .text('Percentile rank shown is the percent of students with incidents to account for enrollment size.')
+      .style('display', show);
+
     // Incidents per Student
     ips_title.selectAll('ips_text')
       .data(d_summary)
@@ -443,6 +451,12 @@ function myVis(results) {
           .attr('fill', '#02323B')
         select('#ips_hover').remove();
       });
+
+    ips_footnote
+      .attr('class', 'footnote')
+      .attr("transform", `translate(0,${height})`)
+      .text('Incidents per student is calculated as total incidents divded by total enrollment.')
+      .style('display', show);
 
     // Annual trends
     let x_array = [2014, 2015, 2016, 2017]
@@ -840,7 +854,7 @@ function myVis(results) {
       right_7.style('display', 'none')
     }
 
-    const note = "Groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The takeaway statement below the visualization summarizes the discrepancy for the group that is most overrepresented in the disciplined population relative to their overall enrollment."
+    const note = "Any groups not displayed have 0% student enrollment for the selected school system or school. Percentages are not shown for groups accounting for less than 2% for readability. The takeaway statement below the visualization summarizes the discrepancy for the group that is most overrepresented in the disciplined population relative to its overall enrollment."
     if (d_subgroup[0]['SUBGROUP_CATEGORY'] === 'Race/Ethnicity') {
       let over_only = [];
       for (let i = 0; i < d_subgroup.length; i++) {
@@ -852,24 +866,35 @@ function myVis(results) {
       const PPTS = PPTS_array.map((i) => Number(i));
       // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
       const idx = PPTS.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-      overunder
-        .text(`${over_only[idx]['SUBGROUP']} students are ${over_only[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${over_only[idx]['PPTS']} percentage points.`);
+      console.log(over_only[idx]['PPTS'])
+      if (over_only[idx]['PPTS'] === '0') {
+        overunder.text('There are no discrepancies between the enrolled population and disciplined population.')
+      }
+      else {
+        overunder
+          .text(`${over_only[idx]['SUBGROUP']} students are ${over_only[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${over_only[idx]['PPTS']} percentage points.`);
+      }
       select('#right-bottom2')
         .attr('class', 'footnote')
         .text("Notes: The Governor's Office of Student Achievement discipline data includes the following Race/Ethnicity groups: American Indian or Alaskan Native, Asian, Black, Hispanic, Native Hawaiian or Other Pacific Islander, Two or More races, and White. " + note);
     }
+
     else {
       const ou = d_subgroup.map(a => a['OVER/UNDER']);
       const idx = ou.findIndex(x => x === 'overrepresented');
       select('#right-bottom2')
         .attr('class', 'footnote')
         .text("Notes: " + note)
-      if (d_subgroup[idx]['SUBGROUP_CATEGORY'] === 'Disability Status') {
+      if (d_subgroup[idx]['PPTS'] === '0') {
+        overunder.text('There are no discrepancies between the enrolled population and disciplined population.')
+      }
+      else if (d_subgroup[idx]['SUBGROUP_CATEGORY'] === 'Disability Status') {
         overunder
-          .text(`${d_subgroup[idx]['SUBGROUP']} are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
+          .text(`${d_subgroup[idx]['SUBGROUP']} are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`);
       }
       else {
-        overunder.text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`)
+        overunder
+          .text(`${d_subgroup[idx]['SUBGROUP']} students are ${d_subgroup[idx]['OVER/UNDER']} in the disciplined population relative to their share of enrollment by ${d_subgroup[idx]['PPTS']} percentage points.`);
       }
     }
   }
