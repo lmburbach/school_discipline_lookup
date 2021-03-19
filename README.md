@@ -17,7 +17,7 @@ This application serves as a dashboard through which users can:
 
 
 ## Notes and Acknowledgements
-Links to helpful sample charts and Stack Overflow posts are cited with in-line comments in [app.js](https://github.com/lmburbach/school_discipline_lookup/blob/main/src/app.js).
+Links to helpful example charts and Stack Overflow posts are cited with in-line comments in [app.js](https://github.com/lmburbach/school_discipline_lookup/blob/main/src/app.js).
 
 I would also like to thank my small group members: Jesica, Nguyen, Sarah, and Emily, and Andrew's office hours for their helpful and patient advice, feedback, and reassurance.
 
