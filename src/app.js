@@ -17,7 +17,7 @@ Promise.all([
 function myVis(results) {
   const [summary, annual, subgroup] = results;
 
-  // Set dropdown features
+  // Build dropdowns
   const subgroups = [...new Set(subgroup.map(item => item['SUBGROUP_CATEGORY']))];
   const schools = [...new Set(subgroup.map(item => item['SYS_SCH_lookup']))];
 
