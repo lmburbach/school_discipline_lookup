@@ -71,7 +71,7 @@ function myVis(results) {
   const x_scale = scaleLinear().domain([0, 100]).range([0, width])
   const y_scale = scaleLinear().domain([0, 10]).range([10, 0])
 
-  // Enrollment Percentile Plot
+  // Enrollment
   const enr_container = select("#left-3")
     .append('div')
     .attr('class', 'chart-container')
@@ -105,7 +105,7 @@ function myVis(results) {
       "translate(" + margin.left + ", 3)");
   const swi_scale = swi
     .append('g')
-    .attr("transform", "translate(0," + height / 2 + ")");  // UPTICK
+    .attr("transform", "translate(0," + height / 2 + ")");
   const swi_circles = swi.append('g');
 
   // Incidents per Student
@@ -127,6 +127,7 @@ function myVis(results) {
   const ips_circles = ips.append('g');
 
   // Annual Trends
+  // https://www.d3-graph-gallery.com/graph/connectedscatter_basic.html
   const trends_title = select('#left-title2');
   trends_title.append('chart-title')
     .attr('class', 'chart-title')
@@ -248,6 +249,7 @@ function myVis(results) {
 
   const overunder = select('#right-bottom');
 
+  // https://stackoverflow.com/questions/20644415/d3-appending-text-to-a-svg-rectangle
   const help = svg.append('g')
 
   help.append('rect')
@@ -255,8 +257,7 @@ function myVis(results) {
     .attr('y', 610)
     .attr('height', '25px')
     .attr('width', '200px')
-    .attr('class', 'help-button')
-    ;
+    .attr('class', 'help-button');
 
   help.append('text')
     .attr('x', 495)
@@ -264,13 +265,13 @@ function myVis(results) {
     .attr('dy', '.50em')
     .text("Help me interpret this chart")
     .attr('class', 'help-text')
+    // https://blockbuilder.org/d3noob/a22c42db65eb00d4e369
     .on('mouseover', function mouseEnter(e) {
       svg_container.append('div')
         .attr('id', 'help_hover')
         .attr('class', 'help-tooltip')
         .style('top', '350px')
         .style('left', '450px')
-        // https://stackoverflow.com/questions/13049050/can-you-insert-a-line-break-in-text-when-using-d3-js
         .text("This chart compares the proportion of a group's overall enrollment to its proportion of the disciplined student population (students with one or more recorded discipline incidents in 2017). If the shape's area gets larger from left to right, that means the portion of the disciplined population exceeds the portion of the enrolled population for that group (i.e. the group is overrepresented in the discipline population). If the area gets smaller, the group is underrepresented in the disciplined population relative to their enrollment. If each group's representation in the disciplined population were equal to its share of enrollment, we would expect to see no changes in height from left to right; each group's shape would just be a rectangle.");
     }).on('mouseout', function mouseEnter(e) {
       select('#help_hover').remove();
@@ -278,6 +279,7 @@ function myVis(results) {
 
   function render() {
     // Filter data based on user selection
+    // https://www.javascripttutorial.net/javascript-array-filter/
     let d_subgroup = [];
     for (let i = 0; i < subgroup.length; i++) {
       if ((subgroup[i]['SYS_SCH_lookup'] === temp_sys_sch) && (subgroup[i]['SUBGROUP_CATEGORY'] === subgroup_selection)) {
@@ -386,7 +388,7 @@ function myVis(results) {
       .attr('fill', '#02323B')
       .attr('stroke', 'black')
       .style('display', show)
-      .on('mouseover', function mouseEnter(e) { //needs attention
+      .on('mouseover', function mouseEnter(e) {
         select(this)
           .attr('fill', '#CB0177')
         swi_container.append('div')
@@ -427,7 +429,7 @@ function myVis(results) {
       .attr('fill', '#02323B')
       .attr('stroke', 'black')
       .style('display', show)
-      .on('mouseover', function mouseEnter(e) { //needs attention
+      .on('mouseover', function mouseEnter(e) {
         select(this)
           .attr('fill', '#CB0177')
         ips_container.append('div')
@@ -502,7 +504,8 @@ function myVis(results) {
         }
       })
 
-    // PROPORTION PLOT
+    // Proportion Plot
+    // https://www.d3-graph-gallery.com/graph/shape.html
     let overall_max = d_subgroup[(d_subgroup.length - 1)]['CUM_%_OVERALL']
     let disc_max = d_subgroup[(d_subgroup.length - 1)]['CUM_%_DISC']
 
